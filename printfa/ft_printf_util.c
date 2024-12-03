@@ -63,7 +63,7 @@ void	ft_putunbr(unsigned int n, unsigned int *counter)
 	*counter += write(1, &res, 1);
 }
 
-void	ft_puthex(unsigned int hex, char uppercase, unsigned int *counter)
+void	ft_puthex(unsigned long hex, char uppercase, unsigned int *counter)
 {
 	char	*alpha;
 
@@ -88,20 +88,11 @@ void	ft_puthex(unsigned int hex, char uppercase, unsigned int *counter)
 
 void	ft_puthexp(unsigned long hex, unsigned int *counter)
 {
-	char	*alpha;
-
-	alpha = "abcdef";
-	if ((hex / 16) == 0)
-	{
-		if ((hex % 16) < 10)
-			ft_putnbr(hex % 16, counter);
-		else
-			*counter += write(1, &alpha[hex % 16 - 10], 1);
-		return ;
-	}
-	ft_puthexp(hex / 16, counter);
-	if (hex % 16 < 10)
-		ft_putnbr(hex % 16, counter);
+	if (hex == 0)
+		*counter += write(1, "(nil)", 5);
 	else
-		*counter += write(1, &alpha[hex % 16 - 10], 1);
+	{
+		*counter += write(1, "0x", 2);
+		ft_puthex(hex, 'x', counter);
+	}
 }

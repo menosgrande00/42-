@@ -28,12 +28,9 @@ void	ft_flags(const char *str_char, va_list va, unsigned int *counter)
 	else if (*str_char == 's')
 		ft_putstr(va_arg(va, const char *), counter);
 	else if (*str_char == 'x' || *str_char == 'X')
-		ft_puthex(va_arg(va, unsigned int), *str_char, counter);
+		ft_puthex(va_arg(va, unsigned long), *str_char, counter);
 	else if (*str_char == 'p')
-	{
-		ft_putstr("0x", counter);
 		ft_puthexp(va_arg(va, unsigned long), counter);
-	}
 	else
 	{
 		*counter += write(1, "%", 1);
