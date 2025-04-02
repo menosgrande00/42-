@@ -39,14 +39,17 @@ long	ft_atoi(const char *str)
 	return (result);
 }
 
-void	error_exit(char **argv, t_stack **a, t_stack **b)
+void	error_exit(int argc, char **argv, t_stack **a, t_stack **b)
 {
 	int i;
 
 	i = -1;
-	while (++i < str_count(argv))
-		free(argv[i]);
-	free(argv);
+	if (argc == 2)
+	{
+		while (++i < str_count(argv))
+			free(argv[i]);
+		free(argv);
+	}
 	free_stack(a);
 	free_stack(b);
 	write(2, "Error\n", 6);
