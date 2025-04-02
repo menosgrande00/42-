@@ -40,7 +40,7 @@ int		stack_size(t_stack *stack);
 int		is_sorted(t_stack *stack);
 void	free_stack(t_stack **stack);
 int		str_count(char **argv);
-void	error_exit(char **argv, t_stack **a, t_stack **b);
+void	error_exit(int argc, char **argv, t_stack **a, t_stack **b);
 
 void	parse_args(t_stack **a, int argc, char **argv, int i);
 void	sort_three(t_stack **a);
