@@ -33,6 +33,5 @@ void	pid_client_checker(int sig);
 size_t	ft_strlen(const char *s);
 char	*ft_strdup(const char *src);
 void	*ft_memcpy(void	*dest, const void	*src, size_t	n);
-int		character_check(char c);
 
 #endif
