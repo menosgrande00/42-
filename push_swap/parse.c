@@ -48,7 +48,7 @@ void	process_elements(t_stack **a, char **argv, int argc, int i)
 		num = ft_atoi(arg);
 		if (!is_valid_number(arg) || (num == 2147483649)
 			|| is_duplicate(*a, num))
-			error_exit(argv, a, NULL);
+			error_exit(argc, argv, a, NULL);
 		new_node = ft_lstnew(num);
 		if (*a == NULL)
 		{
