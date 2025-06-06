@@ -35,5 +35,6 @@ void			parse_tokens(t_minishell *minishell);
 void			add_token_to_list(t_token_list **token_list, t_token *current_token);
 int				single_quotes(t_minishell *minishell, int *i, t_token **current_token);
 int 			double_quotes(t_minishell *minishell, int *i, t_token **current_token);
+int                     money_money(t_minishell *minishell, int *i, t_token **current_token);
 
 #endif

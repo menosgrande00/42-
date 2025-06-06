@@ -1,4 +1,5 @@
 #include "executor.h"
+#include <sys/wait.h>
 
 void	execute_in_parent(char *cmd, t_minishell *minishell)
 {

@@ -1,30 +1,48 @@
 #include "parser.h"
 
-int	is_that_word(t_minishell *minishell, int *i, t_token **current_token)
+int     is_that_word(t_minishell *minishell, int *i, t_token **current_token)
 {
-    char	*tmp;
-    int		start;
+    char    *tmp;
+    int     start;
 
-    while(minishell->input[*i] && minishell->input[*i] != '|'
-            && minishell->input[*i] != '<' && minishell->input[*i] != '>')
+    while (minishell->input[*i] && minishell->input[*i] != '|' &&
+           minishell->input[*i] != '<' && minishell->input[*i] != '>')
     {
-        while(minishell->input[*i] == ' ' || minishell->input[*i] == '\t')
+        while (minishell->input[*i] == ' ' || minishell->input[*i] == '\t')
             (*i)++;
         start = *i;
-        while(minishell->input[*i] && minishell->input[*i] != ' ' 
-              && minishell->input[*i] != '\t' && minishell->input[*i] != '<'
-              && minishell->input[*i] != '>' && minishell->input[*i] != '|'
-				&& minishell->input[*i] != '\'' && minishell->input[*i] != '\"')
+        while (minishell->input[*i] && minishell->input[*i] != ' ' &&
+               minishell->input[*i] != '\t' && minishell->input[*i] != '<' &&
+               minishell->input[*i] != '>' && minishell->input[*i] != '|' &&
+               minishell->input[*i] != '\'' && minishell->input[*i] != '"')
+        {
+            if (minishell->input[*i] == '$')
+            {
+                if (*i - start > 0)
+                {
+                    *current_token = ft_calloc(sizeof(t_token), 1);
+                    if (!*current_token)
+                        return (0);
+                    tmp = ft_substr(minishell->input, start, *i - start);
+                    (*current_token)->value = tmp;
+                    add_token_to_list(&minishell->token_list, *current_token);
+                }
+                if (money_money(minishell, i, current_token))
+                    return (0);
+                start = *i;
+                continue;
+            }
             (*i)++;
-        *current_token = ft_calloc(sizeof(t_token), 1);
-        if (!*current_token)
-            return (0);
-		//buraya bakkkkkkkkkkkkkkkkkkkk bir alttaki if
-		if (*i - start == 0)
-			break;
-	    tmp = ft_substr(minishell->input, start, *i - start);
-        (*current_token)->value = tmp;
-        add_token_to_list(&minishell->token_list, *current_token);
+        }
+        if (*i - start > 0)
+        {
+            *current_token = ft_calloc(sizeof(t_token), 1);
+            if (!*current_token)
+                return (0);
+            tmp = ft_substr(minishell->input, start, *i - start);
+            (*current_token)->value = tmp;
+            add_token_to_list(&minishell->token_list, *current_token);
+        }
     }
     return (1);
 }

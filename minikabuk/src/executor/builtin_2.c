@@ -20,10 +20,10 @@ int	ft_cd(t_minishell *minishell)
 		ft_cd_back_start(minishell);
 		return (0);
 	}
-	result = ft_cd_util(tmp->next->token->value, cwd, new_path, minishell);
+    result = ft_cd_util(tmp->next->token->value, cwd, new_path, minishell);
     if (result != 0)
         return (1);
-	return (0);
+    return (0);
 }
 
 int	ft_export(t_minishell *minishell)

@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include <sys/wait.h>
 
 static int execute_pipe_child(t_minishell *minishell)
 {
