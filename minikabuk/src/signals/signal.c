@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include <signal.h>
 
 void	ft_ctrl_c(int sig)
 {
