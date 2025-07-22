@@ -40,23 +40,28 @@ char	*replace_tmp_envp(char *tmp, int *j, char *value, int len)
 	i = 0;
 	y = (*j) + len + 1;
 	tmp2 = malloc(ft_strlen(tmp) + ft_strlen(value) + 1 - len);
+	if (!tmp2)
+		return (NULL);
+	// Copy prefix (before $)
 	while (tmp[i] != '$')
 	{
 		tmp2[i] = tmp[i];
 		i++;
 	}
-	while (tmp[y])
-	{
-		tmp2[i] = tmp[y];
-		i++;
-		y++;
-	}
+	// Copy value (replacing $VAR)
 	k = 0;
 	while (value[k])
 	{
 		tmp2[i] = value[k];
 		i++;
 		k++;
+	}
+	// Copy suffix (after variable name)
+	while (tmp[y])
+	{
+		tmp2[i] = tmp[y];
+		i++;
+		y++;
 	}
 	tmp2[i] = '\0';
 	return(tmp2);
@@ -66,18 +71,21 @@ char	*env_expand(t_minishell *minishell, char *tmp, int *j)
 {
 	char	*key;
 	char	*value;
+	char	*result;
 
 	(*j)++;
 	key = extract_env_key(tmp, j);
 	if (!key)
-		return (NULL);
+		return (ft_strdup(tmp)); // Return copy of original string if key extraction fails
 	value = get_env_value(minishell->envp, key);
 	if (!value)
-		return (NULL);
+		value = ""; // Use empty string if env var doesn't exist
 	(*j)--;
-	tmp = replace_tmp_envp(tmp, j, value, ft_strlen(key));
+	result = replace_tmp_envp(tmp, j, value, ft_strlen(key));
 	free(key);
-	return (tmp);
+	if (!result)
+		return (ft_strdup(tmp)); // Return copy of original string if replacement fails
+	return (result);
 }
 
 char	*replace_tmp(char *tmp, int *j, char *status)
@@ -136,7 +144,7 @@ int	money_money(t_minishell *minishell, char **tmp)
 			{
 				new_tmp = env_expand(minishell, *tmp, &j);
 				if (!new_tmp)
-					return (1);
+					new_tmp = ft_strdup(*tmp);
 				free(*tmp);
 				*tmp = new_tmp;
 			}
