@@ -125,7 +125,7 @@ static int	process_single_token(t_minishell *minishell, t_token_list **tmp)
     {
         execute_in_parent(cmd[0], minishell);
     }
-    else if ((*tmp)->token->type != TOKEN_WORD)
+    else
     {
         handle_fork_and_execute(minishell, cmd, *tmp);
     }
