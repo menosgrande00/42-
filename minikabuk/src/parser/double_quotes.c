@@ -119,6 +119,12 @@ static int	create_quote_token(t_minishell *minishell, int start, int i, t_token 
 	tmp = ft_substr(minishell->input, start, i - start);
 	if (!tmp)
 		return (1);
+	// Apply environment expansion to the token value
+	if (money_money(minishell, &tmp))
+	{
+		free(tmp);
+		return (1);
+	}
 	*current_token = ft_calloc(sizeof(t_token), 1);
 	if (!*current_token)
 	{
@@ -166,8 +172,8 @@ int	set_input_path(t_minishell *minishell, int *i, int *start)
 	char	*key;
 	char	*value;
 
+	(void)start; // Suppress unused parameter warning
 	key = extract_env_key_double(minishell, i);
-	printf("start : %d\n", *start);
 	value = get_env_value(minishell->envp, key);
 	if (!value)
 		return (1);
