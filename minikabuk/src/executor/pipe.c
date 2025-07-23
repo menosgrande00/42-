@@ -59,6 +59,11 @@ static void	setup_pipe_and_fork(t_minishell *minishell, int i, pid_t *pids, int 
     }
     else if (pids[i] > 0)
     {
+        if (i > 0)
+        {
+            close(fd[(i - 1) % 2][0]);
+            close(fd[(i - 1) % 2][1]);
+        }
         if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export")
             || !ft_strcmp(cmd[0], "unset") || !ft_strcmp(cmd[0], "exit"))
             execute_in_parent(cmd[0], minishell);
