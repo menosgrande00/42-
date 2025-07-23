@@ -9,6 +9,8 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <sys/wait.h>
+# include <signal.h>
 # include "parser.h"
 # include "environment.h"
 # include "executor.h"
