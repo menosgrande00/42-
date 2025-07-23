@@ -19,9 +19,7 @@ int execute_pipe_child(t_minishell *minishell)
 		path = get_path(minishell->envp, cmd[0]);
 		if (!path)
 		{
-			write(2, "minishell: ", 11);
-			write(2, cmd[0], ft_strlen(cmd[0]));
-			write(2, ": command not found\n", 20);
+			printf("minishell: %s: command not found\n", cmd[0]);
 			exit(127);
 		}
 		cmd = ft_same_tokens(&minishell->token_list);
@@ -30,7 +28,6 @@ int execute_pipe_child(t_minishell *minishell)
 			perror("minishell");
 			exit(126);
 		}
-		free(path);
 		exit(0);
 	}
 }
@@ -63,11 +60,6 @@ static void	setup_pipe_and_fork(t_minishell *minishell, int i, pid_t *pids, int 
     }
     else if (pids[i] > 0)
     {
-        if (i > 0)
-        {
-            close(fd[(i - 1) % 2][0]);
-            close(fd[(i - 1) % 2][1]);
-        }
         if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export")
             || !ft_strcmp(cmd[0], "unset") || !ft_strcmp(cmd[0], "exit"))
             execute_in_parent(cmd[0], minishell);
@@ -85,6 +77,11 @@ void	processor(t_minishell *minishell, pid_t *pids, int **fd)
     {
         minishell->token_list = tmp;
         setup_pipe_and_fork(minishell, i, pids, fd);
+        if (i > 0)
+        {
+            close(fd[(i - 1) % 2][0]);
+            close(fd[(i - 1) % 2][1]);
+        }
         if (tmp)
         {
             while (tmp && tmp->token->type != TOKEN_PIPE)
@@ -107,11 +104,6 @@ int	execute_pipe_line(t_minishell *minishell, int i)
 		return (1);
 	set_ignore_signals();
 	processor(minishell, pids, fd);
-	if (minishell->count->pipe_count > 0)
-	{
-		close(fd[(minishell->count->pipe_count - 1) % 2][0]);
-		close(fd[(minishell->count->pipe_count - 1) % 2][1]);
-	}
 	i = 0;
 	while (i < minishell->count->pipe_count + 1)
 	{
