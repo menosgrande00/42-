@@ -35,7 +35,9 @@ void execute_pipe_child(t_minishell *minishell)
 		path = get_path(minishell->envp, cmd[0]);
 		if (!path)
 		{
-			printf("minishell: %s: command not found\n", cmd[0]);
+        	write(2, "minishell: ", 11);
+        	write(2, cmd[0], ft_strlen(cmd[0]));
+        	write(2, ": command not found\n", 20);
 			minishell->exit_status = 127;
 		}
 		cmd = ft_same_tokens(&minishell->token_list);

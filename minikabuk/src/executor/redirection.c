@@ -59,7 +59,11 @@ char	*process_env(t_minishell *minishell, char *cmd, char **cmd_path)
 		tmp_env = tmp_env->next;
 	}
 	if (!tmp_env)
-		printf("minishell: %s: No such file or directory\n", cmd);
+	{
+		write(2, "minishell: cd: ", 15);
+		write(2, cmd, ft_strlen(cmd));
+		write(2, ": No such file or directory\n", 28);
+	}
 	return (NULL);
 }
 
@@ -95,31 +99,32 @@ void	malloc_pid_redirect(int ***fd, pid_t **pids, t_minishell *minishell)
 	}
 }
 
+
 static int	count_command_tokens(t_token_list *token_list)
 {
 	t_token_list	*tmp;
 	int				count;
-	int				skip_next;
 
 	count = 0;
-	skip_next = 0;
 	tmp = token_list;
 	while (tmp)
 	{
-		if (skip_next)
-		{
-			skip_next = 0;
-			tmp = tmp->next;
-			continue;
-		}
 		if (tmp->token->type == TOKEN_COMMAND || tmp->token->type == TOKEN_WORD)
+		{
 			count++;
+			tmp = tmp->next;
+		}
 		else if (tmp->token->type == TOKEN_REDIRECT_IN || 
 				 tmp->token->type == TOKEN_REDIRECT_OUT ||
 				 tmp->token->type == TOKEN_APPEND ||
 				 tmp->token->type == TOKEN_HEREDOC)
-			skip_next = 1;
-		tmp = tmp->next;
+		{
+			tmp = tmp->next;
+			if (tmp)
+				tmp = tmp->next;
+		}
+		else
+			tmp = tmp->next;
 	}
 	return (count);
 }
@@ -130,32 +135,34 @@ char	**extract_clean_command(t_token_list *token_list)
 	char			**cmd_args;
 	int				count;
 	int				i;
-	int				skip_next;
 
 	count = count_command_tokens(token_list);
+	if (count == 0)
+		return (NULL);
 	cmd_args = ft_calloc(count + 1, sizeof(char *));
+	if (!cmd_args)
+		return (NULL);
 	tmp = token_list;
-	skip_next = 0;
 	i = 0;
 	while (tmp && i < count)
 	{
-		if (skip_next)
-		{
-			skip_next = 0;
-			tmp = tmp->next;
-			continue;
-		}
 		if (tmp->token->type == TOKEN_COMMAND || tmp->token->type == TOKEN_WORD)
 		{
 			cmd_args[i] = ft_strdup(tmp->token->value);
 			i++;
+			tmp = tmp->next;
 		}
 		else if (tmp->token->type == TOKEN_REDIRECT_IN || 
 				 tmp->token->type == TOKEN_REDIRECT_OUT ||
 				 tmp->token->type == TOKEN_APPEND ||
 				 tmp->token->type == TOKEN_HEREDOC)
-			skip_next = 1;
-		tmp = tmp->next;
+		{
+			tmp = tmp->next;
+			if (tmp)
+				tmp = tmp->next;
+		}
+		else
+			tmp = tmp->next;
 	}
 	return (cmd_args);
 }
@@ -205,7 +212,9 @@ static int	setup_input_redirections(char *input_file, char *heredoc_delim)
 		input_fd = open(input_file, O_RDONLY);
 		if (input_fd == -1)
 		{
-			printf("minishell: %s: No such file or directory\n", input_file);
+			write(2, "minishell: cd: ", 15);
+			write(2, input_file, ft_strlen(input_file));
+			write(2, ": No such file or directory\n", 28);;
 			return (1);
 		}
 		dup2(input_fd, STDIN_FILENO);
@@ -300,7 +309,7 @@ static int	execute_builtin_with_redirect(char **cmd, t_minishell *minishell)
 	else if (!ft_strcmp(cmd[0], "pwd"))
 		return (ft_pwd());
 	else if (!ft_strcmp(cmd[0], "echo"))
-		return (process_for_echo(&minishell->token_list));
+		return (ft_echo_from_cmd_array(cmd));
 	else if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export") ||
 			!ft_strcmp(cmd[0], "unset") || !ft_strcmp(cmd[0], "exit"))
 		execute_in_parent(cmd[0], minishell);
@@ -316,8 +325,10 @@ static int	execute_external_command(char **cmd, t_minishell *minishell)
 	path = get_path(minishell->envp, cmd[0]);
 	if (!path)
 	{
-		printf("minishell: %s: command not found\n", cmd[0]);
-		return (127);
+        write(2, "minishell: ", 11);
+        write(2, cmd[0], ft_strlen(cmd[0]));
+        write(2, ": command not found\n", 20);
+		minishell->exit_status = 127;
 	}
 	pid = fork();
 	if (pid == 0)
@@ -325,7 +336,8 @@ static int	execute_external_command(char **cmd, t_minishell *minishell)
 		if (execve(path, cmd, make_env_array(minishell)) == -1)
 		{
 			perror("minishell");
-			exit(126);
+			minishell->exit_status = 126;
+			exit(minishell->exit_status);
 		}
 	}
 	else if (pid > 0)
@@ -334,14 +346,14 @@ static int	execute_external_command(char **cmd, t_minishell *minishell)
 		if (WIFEXITED(status))
 			return (WEXITSTATUS(status));
 		else
-			return (1);
+			minishell->exit_status = 1;
 	}
 	else
 	{
 		perror("fork");
-		return (1);
+		minishell->exit_status = 1;
 	}
-	return (0);
+	return (minishell->exit_status);
 }
 
 int	execute_redirect_herodoc_child(t_minishell *minishell)

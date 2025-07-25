@@ -110,7 +110,9 @@ static int	ft_cd_back_one(char *cwd, char *new_path, t_minishell *minishell)
 		return (1);
 	if (chdir(new_path))
 	{
-		printf("minishell: cd: %s: No such file or directory\n", new_path);
+		write(2, "minishell: cd: ", 15);
+		write(2, new_path, ft_strlen(new_path));
+		write(2, ": No such file or directory\n", 28);
 		free(new_path);
 		return(1);
 	}
@@ -126,7 +128,9 @@ static int	ft_go_path(char *cwd, char *new_path, char *current_token)
 		return (1);
 	if (chdir(new_path))
 	{
-		printf("minishell: cd: %s: No such file or directory\n", new_path);
+		write(2, "minishell: cd: ", 15);
+		write(2, new_path, ft_strlen(new_path));
+		write(2, ": No such file or directory\n", 28);
 		free(new_path);
 		return (1);
 	}
@@ -164,7 +168,7 @@ int ft_cd_util(char *current_token, char *cwd, char *new_path, t_minishell *mini
 		if (chdir(current_token))
 		{
 			write(2, "minishell: cd: ", 15);
-			write(2, current_token, strlen(current_token));
+			write(2, current_token, ft_strlen(current_token));
 			write(2, ": No such file or directory\n", 28);
 			free(cwd);
 			return(1);
@@ -374,4 +378,28 @@ char **ft_same_tokens(t_token_list **tmp)
 	}
 	tokens[i] = NULL;
 	return (tokens);
+}
+int	ft_echo_from_cmd_array(char **cmd)
+{
+	int	i;
+	int	no_newline;
+
+	i = 1;
+	no_newline = 0;
+	
+	if (cmd[1] && !ft_strcmp(cmd[1], "-n"))
+	{
+		no_newline = 1;
+		i = 2;
+	}
+	while (cmd[i])
+	{
+		printf("%s", cmd[i]);
+		if (cmd[i + 1])
+			printf(" ");
+		i++;
+	}
+	if (!no_newline)
+		printf("\n");
+	return (0);
 }

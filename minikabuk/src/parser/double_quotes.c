@@ -87,6 +87,14 @@ int	merge_with_previous_token(t_minishell *minishell, t_token **current_token)
 
 static int	handle_quote_merging(t_minishell *minishell, int *i, t_token **current_token, int j)
 {
+	if (j > 0 && (minishell->input[j - 1] == '<' || minishell->input[j - 1] == '>'
+		|| minishell->input[j - 1] == '|') && minishell->input[*i + 1] != '"')
+	{
+		add_token_to_list(&minishell->token_list, *current_token);
+		remove_quotes_from_input(minishell, j, *i);
+		*i = j + ft_strlen((*current_token)->value);
+		return (0);
+	}
 	if (minishell->input[j - 1] == ' ' && (minishell->input[*i + 1] == ' ' || minishell->input[*i + 1] == '\0'))
 	{
 		add_token_to_list(&minishell->token_list, *current_token);

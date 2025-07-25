@@ -39,6 +39,7 @@ int	    add_env(t_minishell *minishell, char *arg);
 int 	is_valid_identifier(const char *name);
 void	ft_cd_back_start(t_minishell *minishell);
 char    **ft_same_tokens(t_token_list **tmp);
+int     ft_echo_from_cmd_array(char **cmd);
 //pipe.c
 int		execute_pipe_line(t_minishell *minishell, int i);
 void     execute_pipe_child(t_minishell *minishell);
