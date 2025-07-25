@@ -1,6 +1,23 @@
 #include "minishell.h"
-
-int execute_pipe_child(t_minishell *minishell)
+static void execute_pipe_builds(t_minishell *minishell, char **cmd)
+{
+	if (!ft_strcmp(cmd[0], "env"))
+		minishell->exit_status = ft_env(minishell);
+	else if (!ft_strcmp(cmd[0], "pwd"))
+		minishell->exit_status = ft_pwd();
+	else if (!ft_strcmp(cmd[0], "echo"))
+		minishell->exit_status = process_for_echo(&minishell->token_list);
+	else if (!ft_strcmp(cmd[0], "export"))
+		minishell->exit_status = ft_export(minishell);
+	else if (!ft_strcmp(cmd[0], "cd"))
+		minishell->exit_status = ft_cd(minishell);
+	else if (!ft_strcmp(cmd[0], "unset"))
+		minishell->exit_status = ft_unset(minishell, *cmd);
+	else if (!ft_strcmp(cmd[0], "exit"))
+		minishell->exit_status = ft_exit(minishell);
+	exit(minishell->exit_status);
+}
+void execute_pipe_child(t_minishell *minishell)
 {
 	char **cmd;
 	char *path;
@@ -8,62 +25,44 @@ int execute_pipe_child(t_minishell *minishell)
 	//if (has_redirect_or_heredoc(minishell))
 		//	handle_redirect_or_heredoc(minishell, &tmp);
 	cmd = current_token(minishell->token_list);
-	if (!ft_strcmp(cmd[0], "env"))
-		exit(ft_env(minishell));
-	else if (!ft_strcmp(cmd[0], "pwd"))
-		exit(ft_pwd());
-	else if (!ft_strcmp(cmd[0], "echo"))
-		exit(process_for_echo(&minishell->token_list));
+	if (!ft_strcmp(cmd[0], "env") || !ft_strcmp(cmd[0], "pwd")
+		|| !ft_strcmp(cmd[0], "echo") || !ft_strcmp(cmd[0], "export")
+		|| !ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "unset")
+		|| !ft_strcmp(cmd[0], "exit"))
+		execute_pipe_builds(minishell, cmd);
 	else
 	{
 		path = get_path(minishell->envp, cmd[0]);
 		if (!path)
 		{
 			printf("minishell: %s: command not found\n", cmd[0]);
-			exit (127);
+			minishell->exit_status = 127;
 		}
 		cmd = ft_same_tokens(&minishell->token_list);
-		if (execve(path, cmd, make_env_array(minishell)) == -1)
+		minishell->exit_status = execve(path, cmd, make_env_array(minishell));
+		if (minishell->exit_status == -1)
 		{
 			perror("minishell");
-			exit(126);
+			minishell->exit_status = 126;
 		}
 		free(path);
-		exit(0);
+		exit(minishell->exit_status);
 	}
 }
 
 static void	setup_pipe_and_fork(t_minishell *minishell, int i, pid_t *pids, int **fd)
 {
-    char	**cmd;
-	int		j;
-
-	j = 0;
-    cmd = current_token(minishell->token_list);
     if (i < minishell->count->pipe_count)
         pipe(fd[i]);
     pids[i] = fork();
-    if (pids[i] == 0 && !(!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export")
-		|| !ft_strcmp(cmd[0], "unset") || !ft_strcmp(cmd[0], "exit")))
+    if (pids[i] == 0)
     {
         set_default_signals();
         if (i > 0)
             dup2(fd[(i - 1)][0], STDIN_FILENO);
         if (i < minishell->count->pipe_count)
 			dup2(fd[i][1], STDOUT_FILENO);
-		while (j < minishell->count->pipe_count)
-        {
-            close(fd[j][0]);
-            close(fd[j][1]);
-            j++;
-        }
         execute_pipe_child(minishell);
-    }
-    else if (pids[i] > 0)
-    {
-        if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export")
-            || !ft_strcmp(cmd[0], "unset") || !ft_strcmp(cmd[0], "exit"))
-            execute_in_parent(cmd[0], minishell);
     }
 }
 

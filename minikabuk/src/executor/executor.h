@@ -41,7 +41,7 @@ void	ft_cd_back_start(t_minishell *minishell);
 char    **ft_same_tokens(t_token_list **tmp);
 //pipe.c
 int		execute_pipe_line(t_minishell *minishell, int i);
-int     execute_pipe_child(t_minishell *minishell);
+void     execute_pipe_child(t_minishell *minishell);
 
 //redirection.c
 int	    handle_redirect_or_heredoc(t_minishell *minishell, t_token_list **token_list);
