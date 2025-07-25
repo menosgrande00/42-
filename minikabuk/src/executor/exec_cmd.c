@@ -110,6 +110,30 @@ static int	handle_fork_and_execute(t_minishell *minishell, char **cmd, t_token_l
     return (0);
 }
 
+static void	skip_redirect_tokens(t_token_list **tmp)
+{
+    while (*tmp)
+    {
+        if ((*tmp)->token->type == TOKEN_REDIRECT_IN || 
+            (*tmp)->token->type == TOKEN_REDIRECT_OUT ||
+            (*tmp)->token->type == TOKEN_APPEND ||
+            (*tmp)->token->type == TOKEN_HEREDOC)
+        {
+            *tmp = (*tmp)->next; // redirect operatorünü atla
+            if (*tmp) // dosya adını atla
+                *tmp = (*tmp)->next;
+        }
+        else if ((*tmp)->token->type == TOKEN_COMMAND || (*tmp)->token->type == TOKEN_WORD)
+        {
+            *tmp = (*tmp)->next; // komutu atla
+        }
+        else
+        {
+            break;
+        }
+    }
+}
+
 static int	process_single_token(t_minishell *minishell, t_token_list **tmp)
 {
     char	**cmd;
@@ -118,6 +142,7 @@ static int	process_single_token(t_minishell *minishell, t_token_list **tmp)
     if (has_redirect_or_heredoc(minishell))
     {
         minishell->exit_status = handle_redirect_or_heredoc(minishell, tmp);
+        skip_redirect_tokens(tmp); // redirect token'larını atla
         return (minishell->exit_status);
     }
     else if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export") ||
@@ -137,10 +162,8 @@ int	execute_no_pipe(t_minishell *minishell, t_token_list *tmp)
     while (tmp)
     {
         process_single_token(minishell, &tmp);
-        if (tmp->next)
-            *tmp = *tmp->next;
-        else
-            break;
+        if (tmp && !has_redirect_or_heredoc(minishell))
+            tmp = tmp->next;
     }
     return (minishell->exit_status);
 }
