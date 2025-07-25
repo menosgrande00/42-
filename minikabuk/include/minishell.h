@@ -9,6 +9,8 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <sys/wait.h>
+# include <signal.h>
 # include "parser.h"
 # include "environment.h"
 # include "executor.h"
@@ -45,5 +47,6 @@ int		execute_command(t_minishell *minishell);
 void	reset_counts(t_minishell *minishell);
 void	set_ignore_signals(void);
 void	set_default_signals(void);
+char	*remove_quotes(char *str);
 
 #endif

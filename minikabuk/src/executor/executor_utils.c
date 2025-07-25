@@ -176,33 +176,48 @@ int ft_cd_util(char *current_token, char *cwd, char *new_path, t_minishell *mini
 
 int	process_for_echo(t_token_list **tmp)
 {	
-	char	*current;
-	char	*temp;
-	int		return_value;
+	char	**cmd_array;
+	int		count;
+	int		i;
+	t_token_list *start;
 
-	current = ft_strdup("");
-	if (!current)
-		return (1);
+	start = *tmp;
+	count = 1; // echo komutu için
 	*tmp = (*tmp)->next;
 
+	// Kaç tane token olduğunu say
 	while (*tmp && (*tmp)->token->type == TOKEN_WORD)
 	{
-		if ((*tmp)->token->value && (*tmp)->token->value[0] != '\0')
-		{
-			if (ft_strlen(current) > 0)
-			{
-				temp = ft_strjoin(current, " ");
-				free(current);
-				current = temp;
-			}
-			temp = ft_strjoin(current, (*tmp)->token->value);
-			free(current);
-			current = temp;
-		}
+		count++;
 		*tmp = (*tmp)->next;
 	}
-	return_value = ft_echo(current);
-	free(current);
+
+	// Array oluştur
+	cmd_array = malloc(sizeof(char *) * (count + 1));
+	if (!cmd_array)
+		return (1);
+
+	// Array'i doldur
+	*tmp = start;
+	i = 0;
+	while (*tmp && ((*tmp)->token->type == TOKEN_COMMAND || (*tmp)->token->type == TOKEN_WORD))
+	{
+		cmd_array[i] = remove_quotes((*tmp)->token->value);
+		i++;
+		*tmp = (*tmp)->next;
+	}
+	cmd_array[i] = NULL;
+
+	int return_value = ft_echo(cmd_array);
+	
+	// Memory cleanup
+	i = 0;
+	while (cmd_array[i])
+	{
+		free(cmd_array[i]);
+		i++;
+	}
+	free(cmd_array);
 	return (return_value);
 }
 
@@ -369,7 +384,7 @@ char **ft_same_tokens(t_token_list **tmp)
 	while (*tmp && ((*tmp)->token->type == TOKEN_COMMAND || 
 			(*tmp)->token->type == TOKEN_WORD))
 	{
-		tokens[i++] = ft_strdup((*tmp)->token->value);
+		tokens[i++] = remove_quotes((*tmp)->token->value);
 		*tmp = (*tmp)->next;
 	}
 	tokens[i] = NULL;

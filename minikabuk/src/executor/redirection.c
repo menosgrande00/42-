@@ -147,7 +147,7 @@ char	**extract_clean_command(t_token_list *token_list)
 		}
 		if (tmp->token->type == TOKEN_COMMAND || tmp->token->type == TOKEN_WORD)
 		{
-			cmd_args[i] = ft_strdup(tmp->token->value);
+			cmd_args[i] = remove_quotes(tmp->token->value);
 			i++;
 		}
 		else if (tmp->token->type == TOKEN_REDIRECT_IN || 
@@ -261,17 +261,17 @@ static void	extract_redirect_files(t_token_list *tmp, char **input_file,
 	{
 		if (tmp->token->type == TOKEN_REDIRECT_IN && tmp->next)
 		{
-			*input_file = tmp->next->token->value;
+			*input_file = remove_quotes(tmp->next->token->value);
 			tmp = tmp->next;
 		}
 		else if (tmp->token->type == TOKEN_REDIRECT_OUT && tmp->next)
 		{
-			*output_file = tmp->next->token->value;
+			*output_file = remove_quotes(tmp->next->token->value);
 			tmp = tmp->next;
 		}
 		else if (tmp->token->type == TOKEN_APPEND && tmp->next)
 		{
-			*append_file = tmp->next->token->value;
+			*append_file = remove_quotes(tmp->next->token->value);
 			tmp = tmp->next;
 		}
 		tmp = tmp->next;
@@ -284,7 +284,7 @@ static char	*extract_heredoc_delim(t_token_list *tmp)
 	{
 		if (tmp->token->type == TOKEN_HEREDOC && tmp->next)
 		{
-			return (tmp->next->token->value);
+			return (remove_quotes(tmp->next->token->value));
 		}
 		tmp = tmp->next;
 	}
@@ -300,7 +300,7 @@ static int	execute_builtin_with_redirect(char **cmd, t_minishell *minishell)
 	else if (!ft_strcmp(cmd[0], "pwd"))
 		return (ft_pwd());
 	else if (!ft_strcmp(cmd[0], "echo"))
-		return (process_for_echo(&minishell->token_list));
+		return (ft_echo(cmd));
 	else if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export") ||
 			!ft_strcmp(cmd[0], "unset") || !ft_strcmp(cmd[0], "exit"))
 		execute_in_parent(cmd[0], minishell);
@@ -399,5 +399,16 @@ int	handle_redirect_or_heredoc(t_minishell *minishell, t_token_list **token_list
 	dup2(saved_stdout, STDOUT_FILENO);
 	close(saved_stdin);
 	close(saved_stdout);
+	
+	// Cleanup memory
+	if (input_file)
+		free(input_file);
+	if (output_file)
+		free(output_file);
+	if (append_file)
+		free(append_file);
+	if (heredoc_delim)
+		free(heredoc_delim);
+	
 	return (ret);
 }

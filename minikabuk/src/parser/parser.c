@@ -55,6 +55,11 @@ void	compare_tokens(t_token *current_token, int *file)
 		current_token->type = TOKEN_FILE;
 		*file = 0;
 	}
+	// Tırnak içindeki tokenlar asla operatör olarak yorumlanmamalı
+	else if (current_token->quotes == 1)
+	{
+		current_token->type = TOKEN_WORD;
+	}
 	else if (ft_strcmp(current_token->value, "<") == 0)
 		current_token->type = TOKEN_REDIRECT_IN;
 	else if (ft_strcmp(current_token->value, ">") == 0)

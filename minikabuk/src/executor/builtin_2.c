@@ -21,8 +21,8 @@ int	ft_cd(t_minishell *minishell)
 		return (0);
 	}
 	result = ft_cd_util(tmp->next->token->value, cwd, new_path, minishell);
-    if (result != 0)
-        return (1);
+	if (result != 0)
+		return (1);
 	return (0);
 }
 

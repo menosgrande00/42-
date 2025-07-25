@@ -115,12 +115,7 @@ static int	process_single_token(t_minishell *minishell, t_token_list **tmp)
     char	**cmd;
 
     cmd = current_token(*tmp);
-    if (has_redirect_or_heredoc(minishell))
-    {
-        minishell->exit_status = handle_redirect_or_heredoc(minishell, tmp);
-        return (minishell->exit_status);
-    }
-    else if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export") ||
+    if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export") ||
         !ft_strcmp(cmd[0], "unset") || !ft_strcmp(cmd[0], "exit"))
     {
         execute_in_parent(cmd[0], minishell);
@@ -134,6 +129,13 @@ static int	process_single_token(t_minishell *minishell, t_token_list **tmp)
 
 int	execute_no_pipe(t_minishell *minishell, t_token_list *tmp)
 {
+    // Redirection var ise sadece onu işle
+    if (has_redirect_or_heredoc(minishell))
+    {
+        minishell->exit_status = handle_redirect_or_heredoc(minishell, &tmp);
+        return (minishell->exit_status);
+    }
+    
     while (tmp)
     {
         process_single_token(minishell, &tmp);
