@@ -35,3 +35,35 @@ void	reset_counts(t_minishell *minishell)
 	minishell->count->append_count = 0;
 	minishell->count->heredoc_count = 0;
 }
+
+char	*remove_quotes(char *str)
+{
+	char	*result;
+	int		len;
+	int		i;
+	int		j;
+
+	if (!str)
+		return (NULL);
+	len = ft_strlen(str);
+	
+	// Tırnak var mı kontrol et
+	if (len >= 2 && ((str[0] == '"' && str[len - 1] == '"') || 
+		(str[0] == '\'' && str[len - 1] == '\'')))
+	{
+		result = malloc(len - 1);
+		if (!result)
+			return (NULL);
+		i = 1;
+		j = 0;
+		while (i < len - 1)
+		{
+			result[j] = str[i];
+			i++;
+			j++;
+		}
+		result[j] = '\0';
+		return (result);
+	}
+	return (ft_strdup(str));
+}

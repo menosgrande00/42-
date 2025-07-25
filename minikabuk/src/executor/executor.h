@@ -8,7 +8,7 @@ typedef struct s_token_list t_token_list;
 typedef struct s_env t_env;
 
 //builtin.c
-int		ft_echo(char *current_token);
+int		ft_echo(char **tokens);
 int		ft_env(t_minishell *minishell);
 int		ft_pwd();
 

@@ -1,27 +1,29 @@
 #include "executor.h"
 
-int	ft_echo(char *current_token)
+int	ft_echo(char **tokens)
 {
 	int i;
-	int a;
-	int y;
+	int newline = 1;
+	int start_idx = 1;
 
-	i = 0;
-	y = 0;
-	a = 0;
-	while (current_token[i])
+	// -n flag kontrolü
+	if (tokens[1] && ft_strcmp(tokens[1], "-n") == 0)
 	{
-		if (current_token[i] == '-' && current_token[i + 1] == 'n')
-		{
-			a = 1;
-			y = 3;
-			break ;
-		}
+		newline = 0;
+		start_idx = 2;
+	}
+	
+	// Tüm argümanları yazdır
+	i = start_idx;
+	while (tokens[i])
+	{
+		printf("%s", tokens[i]);
+		if (tokens[i + 1])  // Son argüman değilse space ekle
+			printf(" ");
 		i++;
 	}
-	while (current_token[y] || y == i - 1)
-		printf("%c", current_token[y++]);
-	if (a == 0)
+	
+	if (newline)
 		printf("\n");
 	return (0);
 }

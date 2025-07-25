@@ -16,9 +16,9 @@ int	execute_pipe_builts(t_minishell *minishell)
 {
 	char **cmd;
 
-	cmd = current_token(minishell->token_list);
+	cmd = ft_same_tokens(&minishell->token_list);
 	if (!ft_strcmp(cmd[0], "echo"))
-		ft_echo(*cmd);
+		ft_echo(cmd);
 	else if(!ft_strcmp(cmd[0], "pwd"))
 		ft_pwd();
 	else if(!ft_strcmp(cmd[0], "env"))

@@ -42,27 +42,9 @@ static int	create_single_quote_token(t_minishell *minishell, int start, int i, t
 
 static int	handle_single_quote_merging(t_minishell *minishell, int *i, t_token **current_token, int j)
 {
-    if (minishell->input[j - 1] == ' ' && (minishell->input[*i + 1] == ' ' || minishell->input[*i + 1] == '\0'))
-    {
-        add_token_to_list(&minishell->token_list, *current_token);
-        (*i)++;
-        return (0);
-    }
-    if (minishell->input[j - 1] != ' ')
-    {
-        merge_with_previous_token(minishell, current_token);
-        if ((minishell->input[*i + 1] != ' ' && minishell->input[*i + 1] != '\0'))
-        {
-            handle_after_quote_text(minishell, i, j);
-            while (minishell->input[*i] != ' ' && minishell->input[*i] != '\0')
-                (*i)++;
-        }
-    }
-    else if ((minishell->input[*i + 1] != ' ' && minishell->input[*i + 1] != '\0'))
-    {
-        remove_single_quotes_from_input(minishell, j, *i);
-        *i = j - 2;
-    }
+    (void)j;
+    // Tırnak içindeki token'ı doğrudan listeye ekle, operatör kontrolleri yapma
+    add_token_to_list(&minishell->token_list, *current_token);
     (*i)++;
     return (0);
 }

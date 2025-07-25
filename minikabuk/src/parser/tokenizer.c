@@ -12,18 +12,35 @@ int	is_that_word(t_minishell *minishell, int *i, t_token **current_token, int *c
 {
     char	*tmp;
     int		start;
+    int		in_quotes;
+    char	quote_char;
 
-    while (minishell->input[*i] && minishell->input[*i] != '|'
-        && minishell->input[*i] != '<' && minishell->input[*i] != '>')
+    in_quotes = 0;
+    quote_char = 0;
+    while (minishell->input[*i] && (in_quotes || (minishell->input[*i] != '|'
+        && minishell->input[*i] != '<' && minishell->input[*i] != '>')))
     {
         if (process_word_part(minishell, i, counter))
             return (1);
         start = *i;
         while (minishell->input[*i] && minishell->input[*i] != ' '
-            && minishell->input[*i] != '\t' && minishell->input[*i] != '<'
-            && minishell->input[*i] != '>' && minishell->input[*i] != '|'
-            && minishell->input[*i] != '\'' && minishell->input[*i] != '\"')
+            && minishell->input[*i] != '\t')
+        {
+            if (!in_quotes && (minishell->input[*i] == '\'' || minishell->input[*i] == '\"'))
+            {
+                in_quotes = 1;
+                quote_char = minishell->input[*i];
+            }
+            else if (in_quotes && minishell->input[*i] == quote_char)
+            {
+                in_quotes = 0;
+                quote_char = 0;
+            }
+            else if (!in_quotes && (minishell->input[*i] == '<'
+                || minishell->input[*i] == '>' || minishell->input[*i] == '|'))
+                break;
             (*i)++;
+        }
         if (*i - start == 0)
             break ;
         *current_token = ft_calloc(sizeof(t_token), 1);
