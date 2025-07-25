@@ -300,7 +300,7 @@ static int	execute_builtin_with_redirect(char **cmd, t_minishell *minishell)
 	else if (!ft_strcmp(cmd[0], "pwd"))
 		return (ft_pwd());
 	else if (!ft_strcmp(cmd[0], "echo"))
-		return (process_for_echo(&minishell->token_list));
+		return (ft_echo_from_cmd_array(cmd));
 	else if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export") ||
 			!ft_strcmp(cmd[0], "unset") || !ft_strcmp(cmd[0], "exit"))
 		execute_in_parent(cmd[0], minishell);

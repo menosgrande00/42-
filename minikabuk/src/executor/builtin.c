@@ -26,6 +26,37 @@ int	ft_echo(char *current_token)
 	return (0);
 }
 
+int	ft_echo_from_cmd_array(char **cmd)
+{
+	int	i;
+	int	no_newline;
+
+	i = 1;
+	no_newline = 0;
+	
+	// Check for -n flag
+	if (cmd[1] && !ft_strcmp(cmd[1], "-n"))
+	{
+		no_newline = 1;
+		i = 2;
+	}
+	
+	// Print arguments separated by spaces
+	while (cmd[i])
+	{
+		printf("%s", cmd[i]);
+		if (cmd[i + 1])
+			printf(" ");
+		i++;
+	}
+	
+	// Print newline unless -n flag was used
+	if (!no_newline)
+		printf("\n");
+	
+	return (0);
+}
+
 int ft_env(t_minishell *minishell)
 {
 	t_env *tmp;

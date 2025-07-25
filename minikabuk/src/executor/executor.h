@@ -9,6 +9,7 @@ typedef struct s_env t_env;
 
 //builtin.c
 int		ft_echo(char *current_token);
+int		ft_echo_from_cmd_array(char **cmd);
 int		ft_env(t_minishell *minishell);
 int		ft_pwd();
 
