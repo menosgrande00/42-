@@ -19,11 +19,14 @@ int	ft_echo(char *current_token)
 		}
 		i++;
 	}
-	while (current_token[y] || y == i - 1)
-		printf("%c", current_token[y++]);
-	if (a == 0)
-		printf("\n");
-	return (0);
+    while (current_token[y] || y == i - 1)
+    {
+        write(1, &current_token[y], 1);
+        y++;
+    }
+    if (a == 0)
+        write(1, "\n", 1);
+    return (0);
 }
 
 int ft_env(t_minishell *minishell)

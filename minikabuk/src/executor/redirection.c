@@ -229,46 +229,58 @@ static int	setup_input_redirections(t_minishell *minishell, char *input_file, ch
 	return (0);
 }
 
-static int	setup_output_redirections(t_minishell *minishell, char *output_file, char *append_file)
+// En son output redirect'ı ve tipini bulur
+void extract_last_output_redirect(t_token_list *tmp, char **last_file, int *is_append)
 {
-	int	output_fd;
-
-	if (append_file)
-	{
-		output_fd = open(append_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (output_fd == -1)
-		{
-			write(2, "minishell: ", 11);
-			write(2, append_file, ft_strlen(append_file));
-			write(2, ": Permission denied\n", 20);
-			minishell->exit_status = 1;
-			return (1);
-		}
-		dup2(output_fd, STDOUT_FILENO);
-		close(output_fd);
-	}
-	else if (output_file)
-	{
-		output_fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (output_fd == -1)
-		{
-			write(2, "minishell: ", 11);
-			write(2, output_file, ft_strlen(output_file));
-			write(2, ": Permission denied\n", 20);
-			minishell->exit_status = 1;
-			return (1);
-		}
-		dup2(output_fd, STDOUT_FILENO);
-		close(output_fd);
-	}
-	return (0);
+    *last_file = NULL;
+    *is_append = 0;
+    while (tmp && tmp->token->type != TOKEN_PIPE)
+    {
+        if ((tmp->token->type == TOKEN_REDIRECT_OUT || tmp->token->type == TOKEN_APPEND) && tmp->next)
+        {
+            *last_file = tmp->next->token->value;
+            *is_append = (tmp->token->type == TOKEN_APPEND);
+            tmp = tmp->next;
+        }
+        tmp = tmp->next;
+    }
 }
 
-int	setup_all_redirections(t_minishell *minishell, char *input_file, char *output_file, char *append_file, char *heredoc_delim)
+static int	setup_output_redirections(t_minishell *minishell)
+{
+    // Bu fonksiyonun parametrelerini kullanmak yerine, en son redirect'ı bul:
+    char *last_file = NULL;
+    int is_append = 0;
+
+    extract_last_output_redirect(minishell->token_list, &last_file, &is_append);
+
+    if (last_file)
+    {
+        int output_fd;
+        if (is_append)
+            output_fd = open(last_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+        else
+            output_fd = open(last_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+
+        if (output_fd == -1)
+        {
+            write(2, "minishell: ", 11);
+            write(2, last_file, ft_strlen(last_file));
+            write(2, ": Permission denied\n", 20);
+            minishell->exit_status = 1;
+            return (1);
+        }
+        dup2(output_fd, STDOUT_FILENO);
+        close(output_fd);
+    }
+    return (0);
+}
+
+int	setup_all_redirections(t_minishell *minishell, char *input_file, char *heredoc_delim)
 {
 	if (setup_input_redirections(minishell, input_file, heredoc_delim))
 		return (1);
-	if (setup_output_redirections(minishell, output_file, append_file))
+	if (setup_output_redirections(minishell))
 		return (1);
 	return (0);
 }
@@ -477,7 +489,7 @@ int	handle_redirect_or_heredoc(t_minishell *minishell, t_token_list **token_list
 	saved_stdout = dup(STDOUT_FILENO);	
 	extract_redirect_files(*token_list, &input_file, &output_file, &append_file);
 	heredoc_delim = extract_heredoc_delim(*token_list);
-	ret = setup_all_redirections(minishell, input_file, output_file, append_file, heredoc_delim);
+	ret = setup_all_redirections(minishell, input_file, heredoc_delim);
 	if (ret == 0)
 		ret = execute_redirect_herodoc_child(minishell);
 	dup2(saved_stdin, STDIN_FILENO);

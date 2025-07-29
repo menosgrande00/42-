@@ -31,33 +31,110 @@ void remove_quotes_from_input(t_minishell *minishell, int j_pos, int i_pos)
 
 int	handle_after_quote_text(t_minishell *minishell, int *i, int j)
 {
-	int		len;
-	int		start_pos;
-	char	*after_text;
+	int		current_pos;
+	char	*result_text;
+	char	*temp_text;
 	t_token_list	*last;
 	char	*combined;
+	int		quote_start, quote_end;
 
-	len = 0;
-	start_pos = *i + 1;
-	while (minishell->input[start_pos + len] && minishell->input[start_pos + len] != ' ')
-		len++;
-	after_text = ft_substr(minishell->input, start_pos, len);
-	if (!after_text)
+	current_pos = *i + 1;
+	result_text = ft_strdup(""); // Boş string ile başla
+	if (!result_text)
 		return (1);
+	
+	// Tırnak sonrası tüm ardışık içeriği topla
+	while (minishell->input[current_pos] && minishell->input[current_pos] != ' ')
+	{
+		if (minishell->input[current_pos] == '"')
+		{
+			// Çift tırnak bulundu, içeriğini al
+			quote_start = current_pos;
+			quote_end = current_pos + 1;
+			
+			// Kapanış tırnağını bul
+			while (minishell->input[quote_end] && minishell->input[quote_end] != '"')
+				quote_end++;
+			
+			if (minishell->input[quote_end] == '"')
+			{
+				// Tırnak içindeki içeriği al
+				char *quoted_content = ft_substr(minishell->input, quote_start + 1, 
+												quote_end - quote_start - 1);
+				if (quoted_content)
+				{
+					temp_text = ft_strjoin(result_text, quoted_content);
+					free(result_text);
+					free(quoted_content);
+					result_text = temp_text;
+					if (!result_text)
+						return (1);
+				}
+				current_pos = quote_end + 1;
+			}
+			else
+			{
+				// Kapanmamış tırnak, hata
+				free(result_text);
+				return (1);
+			}
+		}
+		else
+		{
+			// Normal karakter, direkt ekle
+			char single_char[2] = {minishell->input[current_pos], '\0'};
+			temp_text = ft_strjoin(result_text, single_char);
+			free(result_text);
+			result_text = temp_text;
+			if (!result_text)
+				return (1);
+			current_pos++;
+		}
+	}
+	
+	// Son tokenı bul ve birleştir
 	last = minishell->token_list;
 	while (last && last->next)
 		last = last->next;
+	
 	if (last)
 	{
-		combined = ft_strjoin(last->token->value, after_text);
+		combined = ft_strjoin(last->token->value, result_text);
 		if (combined)
 		{
 			free(last->token->value);
 			last->token->value = combined;
 		}
 	}
-	free(after_text);
-	remove_quotes_from_input(minishell, j, start_pos + len - 1);
+	free(result_text);
+	
+	// Tüm işlenen kısmı input'tan kaldır (tek seferde)
+	char *new_input;
+	int prefix_len = j;
+	int remaining_start = current_pos;
+	int remaining_len = ft_strlen(&minishell->input[remaining_start]);
+	int new_len = prefix_len + remaining_len;
+	
+	new_input = malloc(new_len + 1);
+	if (!new_input)
+		return (1);
+	
+	// Prefix kısmını kopyala
+	for (int idx = 0; idx < prefix_len; idx++)
+		new_input[idx] = minishell->input[idx];
+	
+	// Kalan kısmını kopyala
+	for (int idx = 0; idx < remaining_len; idx++)
+		new_input[prefix_len + idx] = minishell->input[remaining_start + idx];
+	
+	new_input[new_len] = '\0';
+	
+	free(minishell->input);
+	minishell->input = new_input;
+	
+	// Pozisyonu ayarla
+	*i = j + ft_strlen(last->token->value) - 1;
+	
 	return (0);
 }
 
@@ -94,7 +171,7 @@ static int	handle_quote_merging(t_minishell *minishell, int *i, t_token **curren
 		remove_quotes_from_input(minishell, j, *i);
 		*i = j + ft_strlen((*current_token)->value);
 		return (0);
-	}
+	}	
 	if (minishell->input[j - 1] == ' ' && (minishell->input[*i + 1] == ' ' || minishell->input[*i + 1] == '\0'))
 	{
 		add_token_to_list(&minishell->token_list, *current_token);
