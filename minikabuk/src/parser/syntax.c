@@ -1,38 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   syntax.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 20:35:24 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/07/29 20:40:33 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-
-char *get_env_value(t_env *envp, char *key)
-{
-	while (envp)
-	{
-		if (ft_strcmp(envp->key, key) == 0)
-			return (envp->value);
-		envp = envp->next;
-	}
-	return (NULL);
-}
-
-char	*extract_env_key(char *tmp, int *j)
-{
-	char	*key;
-	int		start;
-	int		len;
-	int		i;
-
-	i = *j;
-	start = *j;
-	while (tmp[i] && (ft_isalnum(tmp[i]) || 
-		tmp[i] == '_'))
-		(i)++;
-	len = i - start;
-	if (len == 0)
-		return (NULL);
-	key = ft_substr(tmp, start, len);
-	return (key);
-}
 
 char	*replace_tmp_envp(char *tmp, int *j, char *value, int len)
 {
-	int 	i;
+	int		i;
 	int		y;
 	int		k;
 	char	*tmp2;
@@ -46,20 +28,12 @@ char	*replace_tmp_envp(char *tmp, int *j, char *value, int len)
 		i++;
 	}
 	while (tmp[y])
-	{
-		tmp2[i] = tmp[y];
-		i++;
-		y++;
-	}
+		tmp2[i++] = tmp[y++];
 	k = 0;
 	while (value[k])
-	{
-		tmp2[i] = value[k];
-		i++;
-		k++;
-	}
+		tmp2[i++] = value[k++];
 	tmp2[i] = '\0';
-	return(tmp2);
+	return (tmp2);
 }
 
 char	*env_expand(t_minishell *minishell, char *tmp, int *j)
@@ -82,7 +56,7 @@ char	*env_expand(t_minishell *minishell, char *tmp, int *j)
 
 char	*replace_tmp(char *tmp, int *j, char *status)
 {
-	int 	i;
+	int		i;
 	int		y;
 	char	*last;
 
@@ -103,7 +77,7 @@ char	*replace_tmp(char *tmp, int *j, char *status)
 		i++;
 	}
 	tmp[y] = '\0';
-	return(tmp);
+	return (tmp);
 }
 
 int	money_money_process(t_minishell *minishell, char *tmp, int *j)
@@ -114,13 +88,13 @@ int	money_money_process(t_minishell *minishell, char *tmp, int *j)
 	if (!status)
 		return (1);
 	replace_tmp(tmp, j, status);
-	return (0);		
+	return (0);
 }
 
 int	money_money(t_minishell *minishell, char **tmp)
 {
-	int	j;
-	char *new_tmp;
+	int		j;
+	char	*new_tmp;
 
 	j = 0;
 	while ((*tmp)[j])
@@ -129,8 +103,8 @@ int	money_money(t_minishell *minishell, char **tmp)
 		{
 			if ((*tmp)[(j) + 1] && (*tmp)[(j) + 1] == '?')
 			{
-				if(money_money_process(minishell, *tmp, &j))
-					return(1);
+				if (money_money_process(minishell, *tmp, &j))
+					return (1);
 			}
 			else if ((*tmp)[(j) + 1])
 			{

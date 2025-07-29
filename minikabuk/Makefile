@@ -27,9 +27,7 @@ UTILS_DIR = src/utils/
 LIBFT_DIR = libft/
 LIBFT = $(LIBFT_DIR)libft.a
 
-# Ana kaynak dosyaları
 SRCS =	$(SRC_DIR)/main.c \
-        $(SRC_DIR)/prompt.c \
         $(EXECUTOR_DIR)/builtin.c \
 		$(EXECUTOR_DIR)/builtin_2.c \
         $(EXECUTOR_DIR)/exec_cmd.c \
@@ -42,17 +40,15 @@ SRCS =	$(SRC_DIR)/main.c \
         $(PARSER_DIR)/syntax.c \
         $(PARSER_DIR)/quotes.c \
 		$(PARSER_DIR)/double_quotes.c \
+		$(PARSER_DIR)/dollar_in_quotes.c \
+		$(PARSER_DIR)/handle_after_quote.c \
+		$(PARSER_DIR)/handle_quote_merging.c \
         $(PARSER_DIR)/tokenizer.c \
+		$(PARSER_DIR)/tok_is_that_word.c \
 		$(ENV_DIR)/environment.c \
 		$(ENV_DIR)/export.c \
         $(SIGNAL_DIR)/signal.c \
         $(UTILS_DIR)/utils.c
-
-# Şimdilik devre dışı bırakılan env dosyaları
-# SRCS +=	$(ENV_DIR)/expand.c \
-#			$(ENV_DIR)/export.c \
-#			$(ENV_DIR)/env_utils.c \
-#			$(ENV_DIR)/env_utils_2.c
 
 OBJS = $(SRCS:.c=.o)
 

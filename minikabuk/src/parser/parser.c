@@ -87,7 +87,7 @@ void    parse_tokens(t_minishell *minishell)
 			tmp->token->type = TOKEN_COMMAND;
 			expect_command = 0;
 		}
-        if (tmp->token->type == TOKEN_REDIRECT_IN || 
+        if (tmp->token->type == TOKEN_REDIRECT_IN ||
             tmp->token->type == TOKEN_REDIRECT_OUT ||
             tmp->token->type == TOKEN_APPEND ||
             tmp->token->type == TOKEN_HEREDOC)

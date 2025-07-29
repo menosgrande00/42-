@@ -32,6 +32,13 @@ typedef struct s_token_list
 	struct s_token_list	*next;
 }	t_token_list;
 
+typedef struct s_rebuild_info 
+{
+    int prefix_len;
+    int remaining_start;
+    int new_token_len;
+} t_rebuild_info;
+
 t_token_list	*tokenizer(t_minishell *minishell);
 int				split_input(t_minishell *minishell);
 void			parse_tokens(t_minishell *minishell);
@@ -40,9 +47,16 @@ int				single_quotes(t_minishell *minishell, int *i, t_token **current_token);
 int 			double_quotes(t_minishell *minishell, int *i, t_token **current_token);
 int				money_money(t_minishell *minishell, char **tmp);
 
+void 			remove_quotes_from_input(t_minishell *minishell, int j_pos, int i_pos);
 int				merge_with_previous_token(t_minishell *minishell, t_token **current_token);
 int				handle_after_quote_text(t_minishell *minishell, int *i, int j);
 char			*replace_tmp(char *tmp, int *j, char *status);
-char 			*get_env_value(t_env *envp, char *key);
+int				is_that_word(t_minishell *ms, int *i, t_token **tok, int *counter);
+int				process_quote_content(t_minishell *minishell, int *i, int *start);
+int 			handle_quote_merging(t_minishell *minishell, int *i, t_token **tok, int j);
+int				handle_dollar_in_quotes(t_minishell *minishell, int *i, int *start);
+void			append_to_last_token(t_minishell *minishell, const char *result);
+int				rebuild_input_update_index(t_minishell *minishell, t_rebuild_info info, int *index);
+char    		*collect_after_quot(const char *input, int start_idx, int *out_end_pos);
 
 #endif

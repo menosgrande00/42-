@@ -43,6 +43,8 @@ char	*get_prompt();
 t_env	*init_env(char **envp);
 void	init_signal(void);
 int 	ft_strcmp(const char *s1, const char *s2);
+char	*ft_strcpy(char *dest, char *src);
+char 	*ft_strncpy(char *dest, char *src, unsigned int n);
 int		calloc_minishell(t_minishell *minishell);
 int		execute_command(t_minishell *minishell);
 void	reset_counts(t_minishell *minishell);

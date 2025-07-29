@@ -1,22 +1,34 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 19:58:08 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/07/29 20:00:13 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-void free_env_list(t_env *list)
+void	free_env_list(t_env *list)
 {
-    t_env *tmp;
+	t_env	*tmp;
 
-    while (list)
-    {
-        tmp = list;
-        list = list->next;
-        free(tmp->key);
-        free(tmp->value);
-        free(tmp);
-    }
+	while (list)
+	{
+		tmp = list;
+		list = list->next;
+		free(tmp->key);
+		free(tmp->value);
+		free(tmp);
+	}
 }
 
-void free_token_list(t_token_list *list)
+void	free_token_list(t_token_list *list)
 {
-	t_token_list *tmp;
+	t_token_list	*tmp;
 
 	while (list)
 	{
@@ -31,9 +43,9 @@ void free_token_list(t_token_list *list)
 	}
 }
 
-t_minishell	*create_minishell()
+t_minishell	*create_minishell(void)
 {
-	t_minishell *minishell;
+	t_minishell	*minishell;
 
 	minishell = malloc(sizeof(t_minishell));
 	if (!minishell)
@@ -42,9 +54,9 @@ t_minishell	*create_minishell()
 		return (NULL);
 	}
 	if (calloc_minishell(minishell))
-    {
+	{
 		free(minishell);
-	    return (NULL);
+		return (NULL);
 	}
 	minishell->input = NULL;
 	minishell->envp = malloc(sizeof(t_env));
@@ -65,10 +77,7 @@ void	run_shell(t_minishell *minishell)
 	{
 		minishell->input = readline("minishell> ");
 		if (!minishell->input)
-		{
-			//write(2, "exit\n", 5);
 			break ;
-		}
 		else if (*minishell->input)
 		{
 			add_history(minishell->input);
@@ -87,7 +96,7 @@ void	run_shell(t_minishell *minishell)
 	}
 }
 
-int main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	t_minishell		*minishell;
 
@@ -97,7 +106,7 @@ int main(int argc, char **argv, char **envp)
 	minishell = create_minishell();
 	minishell->envp = init_env(envp);
 	minishell->input = "a";
-    run_shell(minishell);
+	run_shell(minishell);
 	if (minishell->token_list)
 		free_token_list(minishell->token_list);
 	if (minishell->envp)
