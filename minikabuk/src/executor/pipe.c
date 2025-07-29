@@ -1,4 +1,33 @@
 #include "minishell.h"
+static int      open_all_pipes(int **fd, int count)
+{
+    int i;
+
+    i = 0;
+    while (i < count)
+    {
+        if (pipe(fd[i]) == -1)
+            return (1);
+        i++;
+    }
+    return (0);
+}
+
+static void     close_child_fds(int **fd, int pipe_count, int read_index, int write_index)
+{
+    int j;
+
+    j = 0;
+    while (j < pipe_count)
+    {
+        if (j != read_index)
+            close(fd[j][0]);
+        if (j != write_index)
+            close(fd[j][1]);
+        j++;
+    }
+}
+
 static void execute_pipe_builds(t_minishell *minishell, char **cmd)
 {
 	if (!ft_strcmp(cmd[0], "env"))
@@ -64,9 +93,10 @@ static void	setup_pipe_and_fork(t_minishell *minishell, int i, pid_t *pids, int 
     {
         set_default_signals();
         if (i > 0)
-            dup2(fd[(i - 1)][0], STDIN_FILENO);
+            dup2(fd[i - 1][0], STDIN_FILENO);
         if (i < minishell->count->pipe_count)
 			dup2(fd[i][1], STDOUT_FILENO);
+		close_child_fds(fd, minishell->count->pipe_count, i - 1, i);
         execute_pipe_child(minishell);
     }
 }
@@ -115,6 +145,8 @@ int	execute_pipe_line(t_minishell *minishell, int i)
 	minishell->exit_status = malloc_fd_and_pid(&fd, &pids, minishell);
 	if (minishell->exit_status)
 		return (1);
+	if (open_all_pipes(fd, minishell->count->pipe_count))
+        return (1);
 	set_ignore_signals();
 	processor(minishell, pids, fd);
 	while (i < minishell->count->pipe_count)

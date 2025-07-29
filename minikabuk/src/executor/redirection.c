@@ -107,7 +107,7 @@ static int	count_command_tokens(t_token_list *token_list)
 
 	count = 0;
 	tmp = token_list;
-	while (tmp)
+	while (tmp && tmp->token->type != TOKEN_PIPE)
 	{
 		if (tmp->token->type == TOKEN_COMMAND || tmp->token->type == TOKEN_WORD)
 		{
@@ -144,7 +144,7 @@ char	**extract_clean_command(t_token_list *token_list)
 		return (NULL);
 	tmp = token_list;
 	i = 0;
-	while (tmp && i < count)
+	while (tmp && i < count && tmp->token->type != TOKEN_PIPE)
 	{
 		if (tmp->token->type == TOKEN_COMMAND || tmp->token->type == TOKEN_WORD)
 		{
