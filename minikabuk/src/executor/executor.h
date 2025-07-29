@@ -51,4 +51,9 @@ void	free_cmd_path(char **cmd_path, int i);
 char	*process_env(t_minishell *minishell, char *cmd, char **cmd_path);
 int     execute_redirect_herodoc_child(t_minishell *minishell);
 
+
+int     is_dot(char **cmd);
+//files.c
+//char *exec_files(t_minishell *minishell, t_token_list **tmp, char **cmd, char *path);
+
 #endif

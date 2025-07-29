@@ -37,6 +37,7 @@ SRCS =	$(SRC_DIR)/main.c \
         $(EXECUTOR_DIR)/redirection.c \
 		$(EXECUTOR_DIR)/pipe.c \
 		$(EXECUTOR_DIR)/executor_utils.c \
+		$(EXECUTOR_DIR)/files.c \
         $(PARSER_DIR)/parser.c \
         $(PARSER_DIR)/syntax.c \
         $(PARSER_DIR)/quotes.c \

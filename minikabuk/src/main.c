@@ -3,6 +3,7 @@
 void free_env_list(t_env *list)
 {
     t_env *tmp;
+
     while (list)
     {
         tmp = list;

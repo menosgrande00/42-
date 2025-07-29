@@ -60,9 +60,26 @@ char	**make_env_array(t_minishell *minishell)
 }
 ///////////////////////////////////////////
 
+int	is_dot(char **cmd)
+{
+	int	i;
+
+	i = 0;
+	if (cmd[0][0] == '/')
+		return (1);
+	while (cmd[0][i] && cmd[0][i] == '.')
+	{
+		if (cmd[0][i + 1] && cmd[0][i + 1] == '/')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 static void	execute_child_process(t_minishell *minishell, char **cmd, t_token_list **tmp)
 {
     char	*path;
+	struct stat	st;
 
     set_default_signals();
     if (!has_redirect_or_heredoc(minishell) && 
@@ -73,12 +90,40 @@ static void	execute_child_process(t_minishell *minishell, char **cmd, t_token_li
         exit(minishell->exit_status);
     }
     path = get_path(minishell->envp, cmd[0]);
-    if (!path && cmd[0][0] == '/')
+    if (!path && is_dot(cmd))
     {
         if (access(cmd[0], F_OK) == 0)
             path = ft_strdup(cmd[0]);
     }
-    if (!path)
+	if (stat(path, &st) == 0 && is_dot(cmd))
+    {
+        if (S_ISDIR(st.st_mode))
+        {
+            write(2, "minishell: ", 11);
+            write(2, cmd[0], ft_strlen(cmd[0]));
+            write(2, ": is a directory\n", 17);
+            free(path);
+            exit(126);
+        }
+        else if (!(st.st_mode & S_IXUSR))
+        {
+            write(2, "minishell: ", 11);
+            write(2, cmd[0], ft_strlen(cmd[0]));
+            write(2, ": Permission denied\n", 20);
+            free(path);
+            exit(126);
+        }
+    }
+    else if(is_dot(cmd))
+    {
+        // stat başarısız olduysa
+        write(2, "minishell: ", 11);
+        write(2, cmd[0], ft_strlen(cmd[0]));
+        write(2, ": No such file or directory\n", 28);
+        free(path);
+        exit(127);
+    }
+	if (!path)
     {
         write(2, "minishell: ", 11);
         write(2, cmd[0], ft_strlen(cmd[0]));

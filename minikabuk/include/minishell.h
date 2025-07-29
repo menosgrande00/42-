@@ -13,6 +13,8 @@
 # include "parser.h"
 # include "environment.h"
 # include "executor.h"
+# include <errno.h>
+# include <sys/stat.h>
 
 typedef struct s_token_list t_token_list;
 typedef struct s_env t_env;

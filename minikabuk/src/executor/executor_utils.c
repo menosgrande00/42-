@@ -167,9 +167,18 @@ int ft_cd_util(char *current_token, char *cwd, char *new_path, t_minishell *mini
 		current_token = ft_token_with_spaces(minishell);
 		if (chdir(current_token))
 		{
-			write(2, "minishell: cd: ", 15);
-			write(2, current_token, ft_strlen(current_token));
-			write(2, ": No such file or directory\n", 28);
+			if (errno == EACCES)
+			{
+				write(2, "minishell: cd: ", 15);
+				write(2, current_token, ft_strlen(current_token));
+				write(2, ": Permission denied\n", 20);
+			}
+			else
+			{
+				write(2, "minishell: cd: ", 15);
+				write(2, current_token, ft_strlen(current_token));
+				write(2, ": No such file or directory\n", 28);
+			}
 			free(cwd);
 			return(1);
 		}
@@ -188,7 +197,6 @@ int	process_for_echo(t_token_list **tmp)
 	if (!current)
 		return (1);
 	*tmp = (*tmp)->next;
-
 	while (*tmp && (*tmp)->token->type == TOKEN_WORD)
 	{
 		if ((*tmp)->token->value && (*tmp)->token->value[0] != '\0')
@@ -381,7 +389,7 @@ char **ft_same_tokens(t_token_list **tmp)
 }
 int	ft_echo_from_cmd_array(char **cmd)
 {
-	int	i;
+	int i = 0;
 	int	no_newline;
 
 	i = 1;
@@ -392,7 +400,11 @@ int	ft_echo_from_cmd_array(char **cmd)
 		no_newline = 1;
 		i = 2;
 	}
-	while (cmd[i])
+	while (cmd[i] &&
+       ft_strcmp(cmd[i], ">>") != 0 &&
+       ft_strcmp(cmd[i], ">") != 0 &&
+       ft_strcmp(cmd[i], "<") != 0 &&
+       ft_strcmp(cmd[i], "<<") != 0)
 	{
 		printf("%s", cmd[i]);
 		if (cmd[i + 1])
