@@ -13,6 +13,7 @@
 # include "parser.h"
 # include "environment.h"
 # include "executor.h"
+# include "errors/errors.h"
 # include <errno.h>
 # include <sys/stat.h>
 

@@ -8,11 +8,9 @@ int	ft_cd(t_minishell *minishell)
 	t_token_list	*tmp;
 
 	cwd = getcwd(NULL, 0);
-	if (!cwd)
-	{
-		write(2, "Getcmd Failed", 13);
-		return (1);
-	}
+    if (!cwd)
+            return (report_error(minishell,
+                    "minishell: cd: getcwd failed", ERR_FILESYSTEM));
     new_path = NULL;
 	tmp = minishell->token_list;
 	if (!tmp->next)
@@ -32,7 +30,8 @@ int	ft_export(t_minishell *minishell)
 
 	tmp = minishell->token_list;
 	if (!tmp || !tmp->token)
-		return (1);
+		return (report_error(minishell,
+                    "minishell: export: invalid arguments", ERR_INVALID_ARG));
 	if (!tmp->next)
 	{
 		print_envs_alphabetic(minishell->envp);
@@ -56,9 +55,9 @@ int	ft_unset(t_minishell *minishell, char *current_token)
 		return (0);
 	if (!is_valid_identifier(current_token))
 	{
-		write(2, "minishell: unset: `", 19);
-		write(2, current_token, ft_strlen(current_token));
-		write(2, "': not a valid identifier\n", 26);
+        if (!is_valid_identifier(current_token))
+				return (report_error(minishell,
+					"minishell: unset: not a valid identifier", ERR_INVALID_ARG));
 		return (1);
 	}
 	prev = NULL;
@@ -98,33 +97,30 @@ int	is_numeric(const char *str)
     return (0);
 }
 
-///////////////////////////////////////////////
-
 static int	handle_space_in_arg(t_minishell *minishell)
 {
     char	*arg;
     char	*space_pos;
     int		len;
-    char	first_part[256];
+    char	*first_part;
 
+    first_part = malloc(256);
     arg = minishell->token_list->next->token->value;
     space_pos = ft_strchr(arg, ' ');
     len = space_pos - arg;
     ft_strlcpy(first_part, arg, len + 1);
     if (!is_numeric(first_part))
     {
-        write(2, "minishell: exit: too many arguments\n", 36);
-        minishell->exit_status = 1;
-        return (1);
+        free(first_part);
+        return (report_error(minishell,
+                "minishell: unset: not a valid identifier", ERR_INVALID_ARG));
     }
     else
     {
-        write(2, "minishell: exit: ", 17);
-        write(2, first_part, len);
-        write(2, ": numeric argument required\n", 28);
-        write(2, "exit\n", 5);
+		report_num_arg_req(minishell, first_part, len);
+        free(first_part);
         free_for_exit(minishell);
-        exit(255);
+        exit(minishell->exit_status);
     }
 }
 
@@ -137,7 +133,6 @@ static void	handle_error_exit(t_minishell *minishell, char *tmp)
     else
         write(2, tmp, ft_strlen(tmp));
     write(2, ": numeric argument required\n", 28);
-    //write(2, "exit\n", 5);
     free_for_exit(minishell);
     exit(255);
 }
@@ -200,9 +195,7 @@ int	ft_exit(t_minishell *minishell)
             exit_code = result;
     }
     if (exit_code == 255)
-    {
         handle_error_exit(minishell, tmp);
-    }
     write(1, "exit\n", 5);
     free_for_exit(minishell);
     exit(exit_code);

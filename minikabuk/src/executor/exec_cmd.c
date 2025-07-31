@@ -210,8 +210,6 @@ int	execute_no_pipe(t_minishell *minishell, t_token_list *tmp)
 	return (minishell->exit_status);
 }
 
-//////////////////////////////////////////
-
 int	execute_command(t_minishell *minishell)
 {
 	t_token_list	*tmp;

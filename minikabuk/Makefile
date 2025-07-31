@@ -9,10 +9,13 @@ CFLAGS = -Wall -Wextra -Werror -g -I $(SRC_DIR) -I \
 HEADERS =	include/minishell.h \
 			src/parser/parser.h \
 			src/env/environment.h \
+			include/errors.h \
             src/executor/executor.h
 
 
 SRC_DIR = src/
+
+ERRORS_DIR = src/errors/
 
 ENV_DIR = src/env/
 
@@ -48,6 +51,7 @@ SRCS =	$(SRC_DIR)/main.c \
 		$(ENV_DIR)/environment.c \
 		$(ENV_DIR)/export.c \
         $(SIGNAL_DIR)/signal.c \
+		$(ERRORS_DIR)/errors.c \
         $(UTILS_DIR)/utils.c
 
 OBJS = $(SRCS:.c=.o)
