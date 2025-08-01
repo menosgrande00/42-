@@ -65,7 +65,7 @@ $(LIBFT) :
 	make -C $(LIBFT_DIR)
 	make bonus -C $(LIBFT_DIR)
 
-$(NAME) : $(LIBFT) $(PRINTF) $(OBJS)
+$(NAME) : $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) -L/opt/homebrew/opt/readline/lib -lreadline
 
 clean :

@@ -7,6 +7,7 @@
 # include "../libft/libft.h"
 # include <termios.h>
 # include <stdlib.h>
+# include <limits.h>
 # include <unistd.h>
 # include <fcntl.h>
 # include <sys/wait.h>
@@ -16,6 +17,7 @@
 # include "errors/errors.h"
 # include <errno.h>
 # include <sys/stat.h>
+# include <signal.h>
 
 typedef struct s_token_list t_token_list;
 typedef struct s_env t_env;

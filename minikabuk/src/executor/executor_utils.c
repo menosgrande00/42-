@@ -145,7 +145,6 @@ char	*ft_token_with_spaces(t_minishell *minishell)
 	i = ft_strlen(minishell->input);
 	input = ft_strdup(ft_strnstr(minishell->input, "cd", i) + 2);
 	i = 0;
-
 	while (*input == ' ' || *input == '\t')
 		input++;
 	return (input);

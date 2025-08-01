@@ -101,7 +101,7 @@ static void	execute_child_process(t_minishell *minishell, char **cmd, t_token_li
 		{
 			write(2, "minishell: ", 11);
 			write(2, cmd[0], ft_strlen(cmd[0]));
-			write(2, ": is a directory\n", 17);
+			write(2, ": Is a directory\n", 17);
 			free(path);
 			exit(126);
 		}

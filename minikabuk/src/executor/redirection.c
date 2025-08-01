@@ -167,29 +167,67 @@ char	**extract_clean_command(t_token_list *token_list)
 	return (cmd_args);
 }
 
-int setup_heredoc(char *delimiter)
+int	heredoc_child(t_minishell *ms, char	*del, int *pipe_fd)
 {
-	int pipe_fd[2];
-	char *line;
-	
-	if (pipe(pipe_fd) == -1)
-		return (-1);
+	char	*line;
+
+	set_default_signals();
+	close(pipe_fd[0]);
 	while (1)
 	{
 		line = readline("> ");
 		if (!line)
-			break;
-		if (ft_strcmp(line, delimiter) == 0)
+		{
+			write(2, "warning: heredoc delimited by EOF\n", 35);
+			close(pipe_fd[1]);
+			free(ms);
+			exit(1);
+		}
+		else if (ft_strcmp(line, del) == 0)
 		{
 			free(line);
-			break;
+			close(pipe_fd[1]);
+			free(ms);
+			exit(0);
 		}
-		write(pipe_fd[1], line, ft_strlen(line));
-		write(pipe_fd[1], "\n", 1);
+		ft_putstr_fd(line, pipe_fd[1]);
+		ft_putstr_fd("\n", pipe_fd[1]);
 		free(line);
 	}
-	close(pipe_fd[1]);
-	return (pipe_fd[0]);
+}
+
+int setup_heredoc(t_minishell *ms, char *delimiter)
+{
+	int		*pipe_fd;
+	pid_t	pid;
+	int		status;
+
+	pipe_fd = malloc(8);
+	if (pipe(pipe_fd) == -1)
+		return (-1);
+	pid = fork();
+	if (pid == 0)
+		heredoc_child(ms, delimiter, pipe_fd);
+	else if(pid > 0)
+	{
+		set_ignore_signals();
+		close(pipe_fd[1]);
+		waitpid(pid, &status, 0);
+		if (WIFSIGNALED(status))
+		{
+			close(pipe_fd[0]);
+			return (-1);
+		}
+		return (pipe_fd[0]);
+	}
+	else
+	{
+		perror("fork");
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+		return (-1);
+	}
+	return (-1);
 }
 
 ///////////////////////////////
@@ -200,7 +238,7 @@ static int	setup_input_redirections(t_minishell *minishell, char *input_file, ch
 
 	if (heredoc_delim)
 	{
-		input_fd = setup_heredoc(heredoc_delim);
+		input_fd = setup_heredoc(minishell, heredoc_delim);
 		if (input_fd == -1)
 		{
 		    write(2, "minishell: ", 11);
@@ -335,15 +373,20 @@ static void	extract_redirect_files(t_token_list *tmp, char **input_file,
     }
 }
 
-static char	*extract_heredoc_delim(t_token_list *tmp)
+static int	extract_heredoc_delim(t_token_list *tmp, char **heredoc)
 {
 	while (tmp)
 	{
 		if (tmp->token->type == TOKEN_HEREDOC && tmp->next)
-			return (tmp->next->token->value);
+			*heredoc = tmp->next->token->value;
+		else if(tmp->token->type == TOKEN_HEREDOC && !tmp->next)
+		{
+			write(2, "bash: syntax error near unexpected token `newline'\n", 52);
+			return (258);
+		}
 		tmp = tmp->next;
 	}
-	return (NULL);
+	return (1);
 }
 
 static int	execute_builtin_with_redirect(char **cmd, t_minishell *minishell)
@@ -379,7 +422,7 @@ static int	execute_external_command(char **cmd, t_minishell *minishell)
         {
             write(2, "minishell: ", 11);
             write(2, cmd[0], ft_strlen(cmd[0]));
-            write(2, ": is a directory\n", 17);
+            write(2, ": Is a directory\n", 17);
             free(path);
             exit(126);
         }
@@ -474,7 +517,7 @@ int	handle_redirect_or_heredoc(t_minishell *ms, t_token_list **token_list)
 	saved_stdin = dup(STDIN_FILENO);
 	saved_stdout = dup(STDOUT_FILENO);	
 	extract_redirect_files(*token_list, &files.input, &files.output, &files.append);
-	files.heredoc = extract_heredoc_delim(*token_list);
+	extract_heredoc_delim(*token_list, &files.heredoc);
 	ms->exit_status = setup_all_redirection(ms, files.input, files.heredoc);
 	if (ms->exit_status == 0)
 		ms->exit_status = execute_redirect_herodoc_child(ms);

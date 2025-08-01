@@ -3,14 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 20:01:28 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/07/29 20:01:38 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/01 21:02:51 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#ifndef ECHOCTL
+#define ECHOCTL 0001000
+#endif
 
 void	ft_ctrl_c(int sig)
 {
