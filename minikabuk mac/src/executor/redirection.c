@@ -202,7 +202,7 @@ int setup_heredoc(t_minishell *ms, char *delimiter)
 
 	pipe_fd = open(".heredoc", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (pipe_fd == -1)
-		return (1);
+		return (-1);
 	pid = fork();
 	if (pid == 0)
 		heredoc_child(ms, delimiter, pipe_fd);
@@ -210,21 +210,25 @@ int setup_heredoc(t_minishell *ms, char *delimiter)
 	{
 		set_ignore_signals();
 		waitpid(pid, &status, 0);
+		signal(SIGINT, simple_signal_handler);
+		close(pipe_fd);
 		if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
 		{
 			ms->exit_status = 130;
 			unlink(".heredoc");
-			signal(SIGINT, simple_signal_handler);
 			return (-1);
 		}
-		signal(SIGINT, simple_signal_handler);
-		return (0);
+		pipe_fd = open(".heredoc", O_RDONLY);
+	    if (pipe_fd == -1)
+            return (-1);
+		unlink(".heredoc");
+        return (pipe_fd);
 	}
 	else
 	{
 		perror("fork");
 		close(pipe_fd);
-		return (1);
+		return (-1);
 	}
 	return (-1);
 }
