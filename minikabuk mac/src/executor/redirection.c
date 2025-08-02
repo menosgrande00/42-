@@ -170,9 +170,17 @@ char	**extract_clean_command(t_token_list *token_list)
 int	heredoc_child(t_minishell *ms, char	*del, int pipe_fd)
 {
 	char	*line;
+	int		tty_fd;
 
 	(void)ms;
 	set_default_signals();
+	tty_fd = open("/dev/tty", O_RDWR);
+	if (tty_fd != -1)
+	{
+		dup2(tty_fd, STDIN_FILENO);
+		dup2(tty_fd, STDOUT_FILENO);
+		close(tty_fd);
+	}
 	while (1)
 	{
 		line = readline("> ");
