@@ -51,5 +51,7 @@ int		execute_command(t_minishell *minishell);
 void	reset_counts(t_minishell *minishell);
 void	set_ignore_signals(void);
 void	set_default_signals(void);
+void	simple_signal_handler(int sign);
+int		check_signal(void);
 
 #endif

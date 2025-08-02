@@ -6,11 +6,13 @@
 /*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 20:01:28 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/07/29 20:01:38 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/02 13:36:21 by omerfarukon      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+volatile sig_atomic_t	g_signal_received = 0;
 
 void	ft_ctrl_c(int sig)
 {
@@ -31,15 +33,18 @@ void	init_signal(void)
 	signal(SIGINT, ft_ctrl_c);
 	signal(SIGQUIT, SIG_IGN);
 }
-
-void	set_ignore_signals(void)
+void	simple_signal_handler(int sign)
 {
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	g_signal_received = sign;
+	if (sign == SIGINT)
+		write(1, "\n", 1);
 }
 
-void	set_default_signals(void)
+int	check_signal(void)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	int	sig;
+
+	sig = g_signal_received;
+	g_signal_received = 0;
+	return (sig);
 }

@@ -51,6 +51,7 @@ SRCS =	$(SRC_DIR)/main.c \
 		$(ENV_DIR)/environment.c \
 		$(ENV_DIR)/export.c \
         $(SIGNAL_DIR)/signal.c \
+		$(SIGNAL_DIR)/signal_utils.c \
 		$(ERRORS_DIR)/errors.c \
         $(UTILS_DIR)/utils.c
 

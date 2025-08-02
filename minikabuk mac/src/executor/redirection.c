@@ -167,65 +167,64 @@ char	**extract_clean_command(t_token_list *token_list)
 	return (cmd_args);
 }
 
-int	heredoc_child(t_minishell *ms, char	*del, int *pipe_fd)
+int	heredoc_child(t_minishell *ms, char	*del, int pipe_fd)
 {
 	char	*line;
 
+	(void)ms;
 	set_default_signals();
-	close(pipe_fd[0]);
 	while (1)
 	{
 		line = readline("> ");
 		if (!line)
 		{
 			write(2, "warning: heredoc delimited by EOF\n", 35);
-			close(pipe_fd[1]);
-			free(ms);
+			close(pipe_fd);
 			exit(1);
 		}
 		else if (ft_strcmp(line, del) == 0)
 		{
 			free(line);
-			close(pipe_fd[1]);
-			free(ms);
+			close(pipe_fd);
 			exit(0);
 		}
-		ft_putstr_fd(line, pipe_fd[1]);
-		ft_putstr_fd("\n", pipe_fd[1]);
+		ft_putstr_fd(line, pipe_fd);
+		ft_putstr_fd("\n", pipe_fd);
 		free(line);
 	}
 }
 
 int setup_heredoc(t_minishell *ms, char *delimiter)
 {
-	int		*pipe_fd;
+	int		pipe_fd;
 	pid_t	pid;
 	int		status;
 
-	pipe_fd = malloc(8);
-	if (pipe(pipe_fd) == -1)
-		return (-1);
+	pipe_fd = open(".heredoc", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (pipe_fd == -1)
+		return (1);
 	pid = fork();
 	if (pid == 0)
 		heredoc_child(ms, delimiter, pipe_fd);
 	else if(pid > 0)
 	{
 		set_ignore_signals();
-		close(pipe_fd[1]);
 		waitpid(pid, &status, 0);
-		if (WIFSIGNALED(status))
+		if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
 		{
-			close(pipe_fd[0]);
+			ms->exit_status = 130;
+			unlink(".heredoc");
+			signal(SIGINT, simple_signal_handler);
 			return (-1);
 		}
-		return (pipe_fd[0]);
+		signal(SIGINT, simple_signal_handler);
+		return (0);
 	}
 	else
 	{
 		perror("fork");
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		return (-1);
+		close(pipe_fd);
+		return (1);
 	}
 	return (-1);
 }
