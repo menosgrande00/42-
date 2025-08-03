@@ -51,11 +51,11 @@ void execute_pipe_child(t_minishell *minishell)
 	char **cmd;
 	char *path;
 
-	if (has_redirect_or_heredoc(minishell))
-	{
-		minishell->exit_status = handle_redirect_or_heredoc(minishell, &minishell->token_list);
-		exit(minishell->exit_status);
-	}
+        if (has_redirect_or_heredoc(minishell))
+        {
+                minishell->exit_status = handle_redirect(minishell, &minishell->token_list);
+                exit(minishell->exit_status);
+        }
 	cmd = current_token(minishell->token_list);
 	if (!ft_strcmp(cmd[0], "env") || !ft_strcmp(cmd[0], "pwd")
 		|| !ft_strcmp(cmd[0], "echo") || !ft_strcmp(cmd[0], "export")
@@ -101,17 +101,27 @@ static void	setup_pipe_and_fork(t_minishell *minishell, int i, pid_t *pids, int 
     }
 }
 
-void	processor(t_minishell *minishell, pid_t *pids, int **fd)
+void    processor(t_minishell *minishell, pid_t *pids, int **fd)
 {
-    int				i;
-    t_token_list	*tmp;
+    int                         i;
+    int                         saved_stdin;
+    t_token_list        *tmp;
 
     i = 0;
     tmp = minishell->token_list;
     while (i < minishell->count->pipe_count + 1)
     {
         minishell->token_list = tmp;
+        saved_stdin = dup(STDIN_FILENO);
+        if (handle_heredoc(minishell))
+        {
+            dup2(saved_stdin, STDIN_FILENO);
+            close(saved_stdin);
+            break ;
+        }
         setup_pipe_and_fork(minishell, i, pids, fd);
+        dup2(saved_stdin, STDIN_FILENO);
+        close(saved_stdin);
 		if (i > 0)
             close(fd[i - 1][0]);
         if (i < minishell->count->pipe_count)
