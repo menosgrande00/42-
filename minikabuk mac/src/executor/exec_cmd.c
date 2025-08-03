@@ -19,15 +19,34 @@ void	execute_in_parent(char *cmd, t_minishell *minishell)
 
 int	has_redirect_or_heredoc(t_minishell *minishell)
 {
-	if (minishell->count->heredoc_count > 0)
-		return(1);
-	else if(minishell->count->append_count > 0)
-		return (1);
-	else if(minishell->count->redir_in_count > 0)
-		return (1);
-	else if(minishell->count->redir_out_count > 0)
-		return (1);
+	t_token_list	*tmp;
+
+	tmp = minishell->token_list;
+	while (tmp && tmp->token->type != TOKEN_PIPE)
+	{
+		if (tmp->token->type == TOKEN_HEREDOC
+			|| tmp->token->type == TOKEN_APPEND
+			|| tmp->token->type == TOKEN_REDIRECT_IN
+			|| tmp->token->type == TOKEN_REDIRECT_OUT)
+			return (1);
+		tmp = tmp->next;
+	}
 	return (0);
+}
+
+int has_input_redirect_or_heredoc(t_minishell *minishell)
+{
+    t_token_list *tmp;
+
+    tmp = minishell->token_list;
+    while (tmp && tmp->token->type != TOKEN_PIPE)
+    {
+        if (tmp->token->type == TOKEN_HEREDOC
+            || tmp->token->type == TOKEN_REDIRECT_IN)
+            return (1);
+        tmp = tmp->next;
+    }
+    return (0);
 }
 
 char	**make_env_array(t_minishell *minishell)
@@ -179,12 +198,22 @@ static void	skip_redirect_tokens(t_token_list **tmp)
 static int	process_single_token(t_minishell *minishell, t_token_list **tmp)
 {
 	char	**cmd;
+	int		saved_stdin;
 
 	cmd = current_token(*tmp);
 	if (has_redirect_or_heredoc(minishell))
 	{
-		minishell->exit_status = handle_redirect_or_heredoc(minishell, tmp);
-		skip_redirect_tokens(tmp);
+		saved_stdin = dup(STDIN_FILENO);
+		if (handle_heredoc(minishell))
+		{
+			dup2(saved_stdin, STDIN_FILENO);
+			close(saved_stdin);
+			return (minishell->exit_status);
+		}
+		minishell->exit_status = handle_redirect(minishell, tmp);
+		dup2(saved_stdin, STDIN_FILENO);
+		close(saved_stdin);
+		skip_redirect_tokens(tmp); 
 		return (minishell->exit_status);
 	}
 	else if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export") ||
