@@ -42,7 +42,8 @@ int	merge_with_previous_token(t_minishell *minishell, t_token **current_token)
 	last = minishell->token_list;
 	while (last && last->next)
 		last = last->next;
-	if (last)
+	if (last && (*current_token)->value && last->prev 
+        && last->prev->token)
 	{
 		if (!ft_strcmp(last->token->value, ">") ||
             !ft_strcmp(last->token->value, "<") ||

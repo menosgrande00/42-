@@ -46,7 +46,7 @@ void	ft_cd_back_start(t_minishell *minishell)
 	home = NULL;
 	while (env)
 	{
-		if (ft_strcmp(env->key, "HOME") == 0)
+		if (ft_strncmp(env->key, "HOME", ft_strlen(env->key) - 1) == 0)
 		{
 			home = env->value;
 			break;
@@ -71,7 +71,7 @@ char	*find_home(t_minishell *minishell)
 	env = minishell->envp;
 	while (env)
 	{
-		if (ft_strcmp(env->key, "HOME") == 0)
+		if (ft_strncmp(env->key, "HOME", ft_strlen(env->key) - 1) == 0)
 		{
 			home = env->value;
 			break;
@@ -302,7 +302,7 @@ static t_env	*find_existing_env(t_env *envp, char *key)
     it = envp;
     while (it)
     {
-        if (!ft_strcmp(it->key, key))
+        if (!ft_strncmp(it->key, key, ft_strlen(it->key) - 1))
             return (it);
         it = it->next;
     }

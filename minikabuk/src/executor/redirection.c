@@ -51,7 +51,7 @@ char	*process_env(t_minishell *minishell, char *cmd, char **cmd_path)
 	tmp_env = minishell->envp;
 	while (tmp_env)
 	{
-		if (!ft_strcmp(tmp_env->key, cmd))
+		if (!ft_strncmp(tmp_env->key, cmd, ft_strlen(tmp_env->key) - 1))
 		{
 			*cmd_path = get_path(minishell->envp, cmd);
 			return (tmp_env->value);

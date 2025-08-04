@@ -23,8 +23,6 @@ int	execute_pipe_builts(t_minishell *minishell)
 		ft_pwd();
 	else if(!ft_strcmp(cmd[0], "env"))
 		ft_env(minishell);
-	//else
-		//execve();
 	return (1);
 }
 

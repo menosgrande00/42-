@@ -15,10 +15,11 @@ int rebuild_input_update_index(t_minishell *minishell,
 	i = 0;
 	if (!new_input)
 		return (1);
-	while (i++ < info.prefix_len)
+	i = -1;
+	while (++i < info.prefix_len)
 		new_input[i] = minishell->input[i];
-	j = 0;
-	while (j++ < rem_len)
+	j = -1;
+	while (++j < rem_len)
 		new_input[info.prefix_len + j] = minishell->input[info.remaining_start + j];
 	new_input[total_len] = '\0';
 	free(minishell->input);

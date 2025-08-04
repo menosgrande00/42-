@@ -64,7 +64,7 @@ int	ft_unset(t_minishell *minishell, char *current_token)
 	it = minishell->envp;
 	while (it)
 	{
-		if (!ft_strcmp(it->key, current_token))
+		if (!ft_strncmp(it->key, current_token, ft_strlen(it->key) - 1))
 		{
 			if (prev)
 				prev->next = it->next;
