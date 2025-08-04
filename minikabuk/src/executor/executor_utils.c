@@ -187,35 +187,36 @@ int ft_cd_util(char *current_token, char *cwd, char *new_path, t_minishell *mini
     return (ret);
 }
 
-int	process_for_echo(t_token_list **tmp)
-{	
-	char	*current;
-	char	*temp;
-	int		return_value;
+int     process_for_echo(t_token_list **tmp)
+{
+        char    *current;
+        char    *temp;
+        int             return_value;
+        int             first;
 
-	current = ft_strdup("");
-	if (!current)
-		return (1);
-	*tmp = (*tmp)->next;
-	while (*tmp && (*tmp)->token->type == TOKEN_WORD)
-	{
-		if ((*tmp)->token->value && (*tmp)->token->value[0] != '\0')
-		{
-			if (ft_strlen(current) > 0)
-			{
-				temp = ft_strjoin(current, " ");
-				free(current);
-				current = temp;
-			}
-			temp = ft_strjoin(current, (*tmp)->token->value);
-			free(current);
-			current = temp;
-		}
-		*tmp = (*tmp)->next;
-	}
-	return_value = ft_echo(current);
-	free(current);
-	return (return_value);
+        current = ft_strdup("");
+        if (!current)
+                return (1);
+        first = 1;
+        *tmp = (*tmp)->next;
+        while (*tmp && (*tmp)->token->type == TOKEN_WORD)
+        {
+                if (!first)
+                {
+                        temp = ft_strjoin(current, " ");
+                        free(current);
+                        current = temp;
+                }
+                temp = ft_strjoin(current,
+                                (*tmp)->token->value ? (*tmp)->token->value : "");
+                free(current);
+                current = temp;
+                *tmp = (*tmp)->next;
+                first = 0;
+        }
+        return_value = ft_echo(current);
+        free(current);
+        return (return_value);
 }
 
 int	is_pipeline(t_minishell *minishell)

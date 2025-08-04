@@ -6,7 +6,7 @@
 /*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 20:01:28 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/04 14:09:24 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/04 15:07:47 by omerfarukon      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ volatile sig_atomic_t	g_signal_received = 0;
 void	ft_ctrl_c(int sig)
 {
 	g_signal_received = sig;
-	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
+	write(1, "\n^C\n", 4);
 	rl_redisplay();
 }
 
