@@ -85,8 +85,10 @@ int	is_numeric(const char *str)
     int i = 0;
     if (!str || !str[0])
         return (1);
-    if (str[0] == '-' || str[0] == '+')
+    while (str[i] == '-' || str[i] == '+')
         i++;
+    if (!str[i])
+        return(1);
     while (str[i])
     {
         if (str[i] < '0' || str[i] > '9')
