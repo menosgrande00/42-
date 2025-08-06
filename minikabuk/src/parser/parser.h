@@ -6,7 +6,7 @@
 /*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 07:59:23 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/05 09:23:45 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/06 21:08:15 by omerfarukon      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,5 +82,6 @@ int				rebuild_input_update_index(t_minishell *minishell,
 					t_rebuild_info info, int *index);
 char			*collect_after_quot(const char *input,
 					int start_idx, int *out_end_pos);
+int				is_redirection(char *value);
 
 #endif

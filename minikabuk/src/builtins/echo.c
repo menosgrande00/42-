@@ -1,12 +1,10 @@
 #include "minishell.h"
 
-int	ft_echo(char *tok)
+int	ft_echo(char *tok, int i)
 {
-	int	i;
 	int	no_newline;
 	int	j;
 
-	i = 0;
 	no_newline = 0;
 	while (tok[i] == '-' && tok[i + 1] == 'n')
 	{
@@ -36,7 +34,9 @@ int		process_for_echo(t_token_list **tmp)
 	char	*temp;
 	int		return_value;
 	int		first;
+	int		i;
 
+	i = 0;
 	current = ft_strdup("");
 	if (!current)
 			return (1);
@@ -60,20 +60,24 @@ int		process_for_echo(t_token_list **tmp)
 	    *tmp = (*tmp)->next;
 	    first = 0;
 	}
-	return_value = ft_echo(current);
+	return_value = ft_echo(current, i);
 	free(current);
 	return (return_value);
 }
 
 int	ft_echo_from_cmd_array(char **cmd)
 {
-	int i = 1;
-	int no_newline = 0;
-	int first = 1;
+	int	i;
+	int j;
+	int	no_newline;
+	int	first;
 
+	i = 1;
+	no_newline = 0;
+	first = 1;
 	while (cmd[i] && cmd[i][0] == '-' && cmd[i][1] == 'n')
 	{
-		int j = 2;
+		j = 2;
 		while (cmd[i][j] == 'n')
 			j++;
 		if (cmd[i][j] == '\0')
@@ -84,11 +88,7 @@ int	ft_echo_from_cmd_array(char **cmd)
 		else
 		    break;
 	}
-	while (cmd[i] &&
-	    ft_strcmp(cmd[i], ">>") != 0 &&
-	    ft_strcmp(cmd[i], ">") != 0 &&
-	    ft_strcmp(cmd[i], "<") != 0 &&
-	    ft_strcmp(cmd[i], "<<") != 0)
+	while (cmd[i] && !is_redirection(cmd[i]))
 	{
 	    if (!first)
 	        write(1, " ", 1);

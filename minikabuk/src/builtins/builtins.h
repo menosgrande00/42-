@@ -10,10 +10,11 @@ typedef struct s_red_files t_red_files;
 
 int		ft_cd(t_minishell *minishell);
 void	ft_cd_back_start(t_minishell *minishell);
+int		ft_cd_back_one(char *cwd, char *new_path, t_minishell *minishell);
 int		ft_cd_util(char *current_token, char *cwd,
 					char *new_path, t_minishell *minishell);
 
-int		ft_echo(char *tok);
+int		ft_echo(char *tok, int i);
 int		process_for_echo(t_token_list **tmp);
 int		ft_echo_from_cmd_array(char **cmd);
 

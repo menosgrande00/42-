@@ -35,6 +35,7 @@ LIBFT = $(LIBFT_DIR)libft.a
 
 SRCS =	$(SRC_DIR)/main.c \
 		$(BUILTINS_DIR)/cd.c \
+		$(BUILTINS_DIR)/cd_back_one.c \
 		$(BUILTINS_DIR)/echo.c \
 		$(BUILTINS_DIR)/env.c \
 		$(BUILTINS_DIR)/exit.c \

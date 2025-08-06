@@ -6,7 +6,7 @@
 /*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 08:51:37 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/06 20:08:37 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/06 21:07:45 by omerfarukon      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	handle_after_quote_text(t_minishell *minishell, int *i, int j)
 	return (minishell->exit_status);
 }
 
-static int	is_redirection(char *value)
+int	is_redirection(char *value)
 {
 	return (!ft_strcmp(value, ">")
 		|| !ft_strcmp(value, "<")
