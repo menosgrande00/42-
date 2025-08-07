@@ -1,10 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:50:19 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:50:20 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
+
+void	ft_free_env_node(t_env *node)
+{
+	free(node->key);
+	free(node->value);
+	free(node);
+}
 
 void	free_double(char **str)
 {
 	int	i;
 
-	if(!str)
+	if (!str)
 		return ;
 	i = 0;
 	while (str && str[i])
@@ -61,5 +80,5 @@ int	free_for_exit(t_minishell *minishell)
 	free_double(minishell->export);
 	free_double(minishell->tokens);
 	free(minishell);
-	return(0);
+	return (0);
 }

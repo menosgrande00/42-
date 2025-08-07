@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd_back_one.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:19:58 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:20:53 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static char	*find_home(t_minishell *minishell)
@@ -10,10 +22,10 @@ static char	*find_home(t_minishell *minishell)
 	while (env)
 	{
 		if (ft_strncmp(env->key, "HOME",
-			ft_strlen(env->key) - 1) == 0)
+				ft_strlen(env->key) - 1) == 0)
 		{
 			home = env->value;
-			break;
+			break ;
 		}
 		env = env->next;
 	}

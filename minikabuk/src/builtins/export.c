@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:30:06 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:30:20 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	ft_export(t_minishell *minishell)
@@ -7,7 +19,7 @@ int	ft_export(t_minishell *minishell)
 	tmp = minishell->token_list;
 	if (!tmp || !tmp->token)
 		return (report_error(minishell,
-					"minishell: export: invalid arguments", ERR_INVALID_ARG));
+				"minishell: export: invalid arguments", ERR_INVALID_ARG));
 	if (!tmp->next)
 	{
 		print_envs_alphabetic(minishell->envp);

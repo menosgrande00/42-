@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_cmd.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:38:32 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:39:27 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	execute_in_parent(char *cmd, t_minishell *minishell)
 {
-	t_token_list    *tmp;
+	t_token_list	*tmp;
 
 	if (ft_strcmp(cmd, "cd") == 0)
 		minishell->exit_status = ft_cd(minishell);
@@ -34,8 +46,8 @@ int	process_single_token(t_minishell *minishell, t_token_list **tmp)
 		saved_stdin = dup(STDIN_FILENO);
 		if (handle_heredoc(minishell))
 		{
-            dup2(saved_stdin, STDIN_FILENO);
-            close(saved_stdin);
+			dup2(saved_stdin, STDIN_FILENO);
+			close(saved_stdin);
 			return (minishell->exit_status);
 		}
 		minishell->exit_status = handle_redirect(minishell, tmp);
@@ -44,8 +56,8 @@ int	process_single_token(t_minishell *minishell, t_token_list **tmp)
 		skip_redirect_tokens(tmp);
 		return (minishell->exit_status);
 	}
-	else if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export") ||
-		!ft_strcmp(cmd[0], "unset") || !ft_strcmp(cmd[0], "exit"))
+	else if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export")
+		|| !ft_strcmp(cmd[0], "unset") || !ft_strcmp(cmd[0], "exit"))
 		execute_in_parent(cmd[0], minishell);
 	else if ((*tmp)->token->type != TOKEN_WORD)
 		handle_fork_and_execute(minishell, cmd, *tmp);
@@ -66,16 +78,13 @@ int	execute_no_pipe(t_minishell *minishell, t_token_list *tmp)
 int	execute_command(t_minishell *minishell)
 {
 	t_token_list	*tmp;
-	int				return_value;
+	int				ret;
 
 	tmp = minishell->token_list;
-	return_value = 0;
+	ret = 0;
 	if (is_pipeline(minishell))
-	{
-		if (execute_pipe_line(minishell, 0))
-			printf("Execute Error");
-	}
+		ret = execute_pipe_line(minishell);
 	else
-		return_value = execute_no_pipe(minishell, tmp);
-	return (return_value);
+		ret = execute_no_pipe(minishell, tmp);
+	return (ret);
 }

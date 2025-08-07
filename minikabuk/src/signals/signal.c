@@ -6,7 +6,7 @@
 /*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 20:01:28 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/06 06:53:23 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/07 18:05:30 by omerfarukon      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	init_signal(void)
 	signal(SIGINT, ft_ctrl_c);
 	signal(SIGQUIT, SIG_IGN);
 }
+
 void	simple_signal_handler(int sign)
 {
 	g_signal_received = sign;
@@ -49,9 +50,9 @@ int	check_signal(void)
 	return (sig);
 }
 
-void heredoc_sigint_handler(int sig)
+void	heredoc_sigint_handler(int sig)
 {
-    (void)sig;
-    write(1, "\n", 1);
-    exit(130);
+	(void)sig;
+	write(1, "\n", 1);
+	exit(130);
 }

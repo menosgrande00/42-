@@ -6,7 +6,7 @@
 /*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 20:00:34 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/07/29 21:56:52 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/07 18:07:28 by omerfarukon      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char	*ft_strcpy(char *dest, char *src)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (src[i])
@@ -26,9 +26,9 @@ char	*ft_strcpy(char *dest, char *src)
 	return (dest);
 }
 
-char *ft_strncpy(char *dest, char *src, unsigned int n)
+char	*ft_strncpy(char *dest, char *src, unsigned int n)
 {
-	unsigned int i;
+	unsigned int	i;
 
 	i = 0;
 	while (src[i] != '\0' && (i < n))

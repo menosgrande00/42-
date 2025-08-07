@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 18:17:15 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 18:17:16 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -18,10 +30,10 @@
 # include <errno.h>
 # include <sys/stat.h>
 
-typedef struct s_token_list t_token_list;
-typedef struct s_env t_env;
-typedef struct s_red_files t_red_files;
-typedef struct s_rebuild_info t_rebuild_info;
+typedef struct s_token_list		t_token_list;
+typedef struct s_env			t_env;
+typedef struct s_red_files		t_red_files;
+typedef struct s_rebuild_info	t_rebuild_info;
 
 typedef struct s_count
 {
@@ -46,9 +58,9 @@ typedef struct s_minishell
 void	ft_ctrl_c(int sig);
 t_env	*init_env(char **envp);
 void	init_signal(void);
-int 	ft_strcmp(const char *s1, const char *s2);
+int		ft_strcmp(const char *s1, const char *s2);
 char	*ft_strcpy(char *dest, char *src);
-char 	*ft_strncpy(char *dest, char *src, unsigned int n);
+char	*ft_strncpy(char *dest, char *src, unsigned int n);
 int		is_numeric(const char *str);
 int		calloc_minishell(t_minishell *minishell);
 int		execute_command(t_minishell *minishell);
@@ -58,6 +70,5 @@ void	set_default_signals(void);
 void	simple_signal_handler(int sign);
 void	heredoc_sigint_handler(int signo);
 int		check_signal(void);
-
 
 #endif

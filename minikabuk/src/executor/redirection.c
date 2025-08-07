@@ -1,5 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirection.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:58:39 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:58:50 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-static	int redirect_counts(t_minishell *ms)
+
+static int	redirect_counts(t_minishell *ms)
 {
 	int	i;
 
@@ -52,7 +65,7 @@ static int	run_redirection_process(t_minishell *ms, t_token_list **token_list,
 static void	restore_and_cleanup(int saved_stdin, int saved_stdout,
 								int **fd, pid_t *pids)
 {
-	int i;
+	int	i;
 
 	dup2(saved_stdin, STDIN_FILENO);
 	dup2(saved_stdout, STDOUT_FILENO);
@@ -60,17 +73,17 @@ static void	restore_and_cleanup(int saved_stdin, int saved_stdout,
 	close(saved_stdout);
 	if (pids)
 		free(pids);
-	    if (fd)
-    {
-        i = 0;
-        while (i < 2)
-        {
-            if (fd[i])
-                free(fd[i]);
-            i++;
-        }
-        free(fd);
-    }
+	if (fd)
+	{
+		i = 0;
+		while (i < 2)
+		{
+			if (fd[i])
+				free(fd[i]);
+			i++;
+		}
+		free(fd);
+	}
 }
 
 int	handle_redirect(t_minishell *ms, t_token_list **token_list)
@@ -87,14 +100,14 @@ int	handle_redirect(t_minishell *ms, t_token_list **token_list)
 	fd = NULL;
 	pids = NULL;
 	malloc_pid_redirect(&fd, &pids, ms);
-    if (!fd || !pids)
-    {
-        if (fd)
-            restore_and_cleanup(0, 0, fd, NULL);
-        if (pids)
-            free(pids);
-        return (1);
-    }
+	if (!fd || !pids)
+	{
+		if (fd)
+			restore_and_cleanup(0, 0, fd, NULL);
+		if (pids)
+			free(pids);
+		return (1);
+	}
 	saved_stdin = dup(STDIN_FILENO);
 	saved_stdout = dup(STDOUT_FILENO);
 	ms->exit_status = run_redirection_process(ms, token_list, &files);

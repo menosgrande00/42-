@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:21:20 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:22:24 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static char	*ft_token_with_spaces(t_minishell *minishell)
@@ -32,7 +44,7 @@ static int	ft_go_path(char *cwd, char *new_path, char *current_token)
 	return (0);
 }
 
-int ft_cd_util(char *current_token, char *cwd, char *new_path, t_minishell *minishell)
+int	ft_cd_util(char *current_token, char *cwd, char *new_path, t_minishell *ms)
 {
 	int	ret;
 
@@ -40,20 +52,20 @@ int ft_cd_util(char *current_token, char *cwd, char *new_path, t_minishell *mini
 	if (current_token[0] == '/')
 		ret = ft_go_path(cwd, new_path, current_token);
 	else if (!ft_strcmp(current_token, ".."))
-		ret = ft_cd_back_one(cwd, new_path, minishell);
+		ret = ft_cd_back_one(cwd, new_path, ms);
 	else if (!ft_strcmp(current_token, "."))
 		free(cwd);
 	else
 	{
-		current_token = ft_token_with_spaces(minishell);
+		current_token = ft_token_with_spaces(ms);
 		if (chdir(current_token))
 		{
 			if (errno == EACCES)
-				report_perm_denied(minishell, current_token);
+				report_perm_denied(ms, current_token);
 			else
-				report_no_such_file(minishell, current_token);
+				report_no_such_file(ms, current_token);
 			free(cwd);
-			return(1);
+			return (1);
 		}
 		free(cwd);
 	}
@@ -94,8 +106,8 @@ int	ft_cd(t_minishell *minishell)
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
-			return (report_error(minishell,
-					"minishell: cd: getcwd failed", ERR_FILESYSTEM));
+		return (report_error(minishell,
+				"minishell: cd: getcwd failed", ERR_FILESYSTEM));
 	new_path = NULL;
 	tmp = minishell->token_list;
 	if (!tmp->next)

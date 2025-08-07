@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_utils3.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:35:16 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:35:17 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	free_cmd_path(char **cmd_path, int i)
@@ -10,15 +22,34 @@ void	free_cmd_path(char **cmd_path, int i)
 	free(cmd_path);
 }
 
+static char	*find_and_check_path(char **paths, char *cmd)
+{
+	int		i;
+	char	*temp_path;
+	char	*path;
+
+	i = -1;
+	while (paths[++i])
+	{
+		temp_path = ft_strjoin(paths[i], "/");
+		path = ft_strjoin(temp_path, cmd);
+		free(temp_path);
+		if (access(path, X_OK) == 0)
+		{
+			free_cmd_path(paths, 0);
+			return (path);
+		}
+		free(path);
+	}
+	free_cmd_path(paths, 0);
+	return (NULL);
+}
+
 char	*get_path(t_env *envp, char *cmd)
 {
 	char	**paths;
-	char	*path;
-	char	*temp_path;
 	t_env	*tmp_env;
-	int		i;
 
-	i = -1;
 	tmp_env = envp;
 	while (tmp_env)
 	{
@@ -27,19 +58,7 @@ char	*get_path(t_env *envp, char *cmd)
 			paths = ft_split(tmp_env->value, ':');
 			if (!paths)
 				return (NULL);
-			while (paths[++i])
-			{
-				temp_path = ft_strjoin(paths[i], "/");
-				path = ft_strjoin(temp_path, cmd);
-				free(temp_path);
-				if (access(path, X_OK) == 0)
-				{
-					free_cmd_path(paths, 0);
-					return (path);
-				}
-				free(path);
-			}
-			free_cmd_path(paths, 0);
+			return (find_and_check_path(paths, cmd));
 		}
 		tmp_env = tmp_env->next;
 	}

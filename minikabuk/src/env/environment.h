@@ -1,15 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   environment.h                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:35:41 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:36:35 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef ENVIRONMENT_H
 # define ENVIRONMENT_H
 
 # include "minishell.h"
 
-typedef struct s_minishell t_minishell;
+typedef struct s_minishell	t_minishell;
 
 typedef struct s_env
 {
-	char            *key;
-	char            *value;
-	struct s_env    *next;
+	char			*key;
+	char			*value;
+	struct s_env	*next;
 }		t_env;
 
 t_env	*init_env(char **envp);

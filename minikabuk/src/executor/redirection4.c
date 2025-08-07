@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirection4.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 18:01:03 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 18:01:04 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	execute_builtin_with_redirect(char **cmd, t_minishell *minishell)
@@ -8,8 +20,8 @@ static int	execute_builtin_with_redirect(char **cmd, t_minishell *minishell)
 		return (ft_pwd());
 	else if (!ft_strcmp(cmd[0], "echo"))
 		return (ft_echo_from_cmd_array(cmd));
-	else if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export") ||
-			!ft_strcmp(cmd[0], "unset") || !ft_strcmp(cmd[0], "exit"))
+	else if (!ft_strcmp(cmd[0], "cd") || !ft_strcmp(cmd[0], "export")
+		|| !ft_strcmp(cmd[0], "unset") || !ft_strcmp(cmd[0], "exit"))
 		execute_in_parent(cmd[0], minishell);
 	return (0);
 }
@@ -49,12 +61,12 @@ int	execute_redirect_child(t_minishell *minishell)
 	int		ret;
 
 	cmd = extract_clean_command(minishell->token_list);
-    if (!cmd || !cmd[0])
-    {
-        if (cmd)
-            free_double(cmd);
-        return (1);
-    }
+	if (!cmd || !cmd[0])
+	{
+		if (cmd)
+			free_double(cmd);
+		return (1);
+	}
 	if (!ft_strcmp(cmd[0], "env") || !ft_strcmp(cmd[0], "pwd")
 		|| !ft_strcmp(cmd[0], "echo") || !ft_strcmp(cmd[0], "cd")
 		|| !ft_strcmp(cmd[0], "export") || !ft_strcmp(cmd[0], "unset")

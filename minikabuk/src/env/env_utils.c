@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:34:19 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:34:41 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	**make_env_array(t_minishell *minishell)
@@ -31,7 +43,7 @@ char	*extract_env_key_double(t_minishell *minishell, int *i)
 	char	*key;
 	int		j;
 	int		k;
-	
+
 	j = *i + 1;
 	k = 0;
 	while (minishell->input[j] && minishell->input[j] != ' '
@@ -43,7 +55,7 @@ char	*extract_env_key_double(t_minishell *minishell, int *i)
 	key = malloc(sizeof(char) * k + 1);
 	j = *i + 1;
 	k = 0;
-	while(minishell->input[j] && minishell->input[j] != ' '
+	while (minishell->input[j] && minishell->input[j] != ' '
 		&& minishell->input[j] != '"')
 	{
 		key[k] = minishell->input[j];

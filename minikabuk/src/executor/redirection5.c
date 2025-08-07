@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirection5.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 18:01:55 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 18:01:56 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static char	*find_command_path(t_env *envp, char **cmd)
@@ -13,23 +25,23 @@ static char	*find_command_path(t_env *envp, char **cmd)
 	return (path);
 }
 
-static void	child_process_execution(char *path, char **cmd, t_minishell *minishell)
+static void	child_process_execution(char *path, char **cmd, t_minishell *ms)
 {
-    char **env_array;
+	char	**env_array;
 
-    env_array = make_env_array(minishell);
-    if (!env_array)
-    {
-        free(path);
-        exit(1);
-    }
-    if (execve(path, cmd, env_array) == -1)
-    {
-        free(path);
-        free_double(env_array);
-        perror("minishell");
-        exit(126);
-    }
+	env_array = make_env_array(ms);
+	if (!env_array)
+	{
+		free(path);
+		exit(1);
+	}
+	if (execve(path, cmd, env_array) == -1)
+	{
+		free(path);
+		free_double(env_array);
+		perror("minishell");
+		exit(126);
+	}
 }
 
 static int	parent_process_wait(pid_t pid, t_minishell *minishell)
@@ -50,7 +62,7 @@ int	execute_external_command(char **cmd, t_minishell *minishell)
 
 	path = find_command_path(minishell->envp, cmd);
 	if (!path)
-		return(report_cmd_not_found(minishell, cmd[0]));
+		return (report_cmd_not_found(minishell, cmd[0]));
 	validate_and_execute(minishell, cmd, path);
 	pid = fork();
 	if (pid == 0)

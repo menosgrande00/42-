@@ -1,5 +1,17 @@
-# include "errors.h"
-# include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   errors.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:38:15 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:38:16 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "errors.h"
+#include "minishell.h"
 
 int	report_error(t_minishell *minishell, const char *msg, int code)
 {

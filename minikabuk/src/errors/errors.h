@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   errors.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 18:05:54 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 18:06:22 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef ERRORS_H
 # define ERRORS_H
 
@@ -9,9 +21,9 @@
 # define ERR_SYNTAX				258
 # define ERR_FILESYSTEM			1
 
-typedef struct s_minishell t_minishell;
+typedef struct s_minishell	t_minishell;
 
-int report_error(t_minishell *minishell, const char *msg, int code);
+int	report_error(t_minishell *minishell, const char *msg, int code);
 int	report_cmd_not_found(t_minishell *minishell, const char *cmd);
 int	report_num_arg_req(t_minishell *minishell, const char *cmd, int len);
 int	report_no_such_file(t_minishell *minishell, const char *cmd);

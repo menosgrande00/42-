@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_export.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:30:31 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:31:00 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "environment.h"
 
 static int	env_size(t_env *env)
@@ -5,7 +17,7 @@ static int	env_size(t_env *env)
 	int	size;
 
 	size = 0;
-	while(env)
+	while (env)
 	{
 		env = env->next;
 		size++;
@@ -44,7 +56,7 @@ static void	sort_env_array(t_env **arr)
 	size = 0;
 	while (arr[size])
 		size++;
-	while(i < size - 1)
+	while (i < size - 1)
 	{
 		j = 0;
 		while (j < size - 1)
@@ -70,7 +82,7 @@ void	print_envs_alphabetic(t_env *env)
 	i = 0;
 	arr = env_to_array(env);
 	if (!arr)
-		return;
+		return ;
 	sort_env_array(arr);
 	while (arr[i])
 	{

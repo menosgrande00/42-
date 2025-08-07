@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirection2.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:58:58 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:59:20 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	handle_input_redirect(t_token_list *tmp, char **input_file)
@@ -10,7 +22,7 @@ static int	handle_input_redirect(t_token_list *tmp, char **input_file)
 	if (fd == -1)
 	{
 		write(2, "minishell: ", 11);
-		write(2, tmp->next->token->value, 
+		write(2, tmp->next->token->value,
 			ft_strlen(tmp->next->token->value));
 		write(2, ": No such file or directory\n", 28);
 		return (1);
@@ -20,7 +32,7 @@ static int	handle_input_redirect(t_token_list *tmp, char **input_file)
 	return (0);
 }
 
-static int	handle_output_redirect(t_token_list *tmp, char **output_file, 
+static int	handle_output_redirect(t_token_list *tmp, char **output_file,
 									int is_append)
 {
 	int	fd;
@@ -36,7 +48,7 @@ static int	handle_output_redirect(t_token_list *tmp, char **output_file,
 	if (fd == -1)
 	{
 		write(2, "minishell: ", 11);
-		write(2, tmp->next->token->value, 
+		write(2, tmp->next->token->value,
 			ft_strlen(tmp->next->token->value));
 		write(2, ": Permission denied\n", 20);
 		return (1);
@@ -75,14 +87,14 @@ static int	process_redirect_token(t_token_list **tmp, char **input_file,
 	return (0);
 }
 
-int	extract_redirect_files(t_token_list *tmp, char **input_file, 
+int	extract_redirect_files(t_token_list *tmp, char **input_file,
 							char **output_file, char **append_file)
 {
 	int	result;
 
 	while (tmp && tmp->token->type != TOKEN_PIPE)
 	{
-		result = process_redirect_token(&tmp, input_file, 
+		result = process_redirect_token(&tmp, input_file,
 				output_file, append_file);
 		if (result)
 			return (result);

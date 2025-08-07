@@ -6,7 +6,7 @@
 /*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 19:58:08 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/06 15:25:46 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/07 18:03:38 by omerfarukon      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	run_shell(t_minishell *minishell)
 		if (check_signal() == SIGINT)
 			minishell->exit_status = 130;
 		if (!minishell->input)
-            break ;
+			break ;
 		else if (*minishell->input)
 		{
 			add_history(minishell->input);

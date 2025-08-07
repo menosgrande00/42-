@@ -1,46 +1,48 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 18:15:21 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 18:15:22 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static void heredoc_child(t_minishell *ms, char	*del, int pipe_fd)
+static int	handle_heredoc_errors(t_minishell *ms, int status, int pipe_fd)
 {
-	char	*line;
-	int		tty_fd;
-
-	(void)ms;
-	signal(SIGINT, heredoc_sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
-	tty_fd = open("/dev/tty", O_RDWR);
-	if (tty_fd != -1)
+	if ((WIFEXITED(status) && WEXITSTATUS(status) == 130))
 	{
-		dup2(tty_fd, STDIN_FILENO);
-		dup2(tty_fd, STDOUT_FILENO);
-		close(tty_fd);
+		ms->exit_status = 130;
+		close(pipe_fd);
+		return (-1);
 	}
-	while (1)
+	else if (WIFSIGNALED(status))
 	{
-		line = readline("> ");
-		if (!line)
-		{
-			write(2, "warning: heredoc delimited by EOF\n", 35);
-			close(pipe_fd);
-			exit(0);
-		}
-		else if (ft_strcmp(line, del) == 0)
-		{
-			free(line);
-			close(pipe_fd);
-			exit(0);
-		}
-		ft_putstr_fd(line, pipe_fd);
-		ft_putstr_fd("\n", pipe_fd);
-		free(line);
+		ms->exit_status = 128 + WTERMSIG(status);
+		close(pipe_fd);
+		return (-1);
 	}
+	return (pipe_fd);
 }
 
-static int  setup_heredoc(t_minishell *ms, char *delimiter)
+static int	heredoc_parent(t_minishell *ms, int pid, int pipe_fd[2])
+{
+	int	status;
+
+	close(pipe_fd[1]);
+	waitpid(pid, &status, 0);
+	init_signal();
+	return (handle_heredoc_errors(ms, status, pipe_fd[0]));
+}
+
+static int	setup_heredoc(t_minishell *ms, char *delimiter)
 {
 	int		pipe_fd[2];
 	pid_t	pid;
-	int		status;
 
 	if (pipe(pipe_fd) == -1)
 		return (-1);
@@ -51,25 +53,8 @@ static int  setup_heredoc(t_minishell *ms, char *delimiter)
 		close(pipe_fd[0]);
 		heredoc_child(ms, delimiter, pipe_fd[1]);
 	}
-	else if(pid > 0)
-	{
-		close(pipe_fd[1]);
-		waitpid(pid, &status, 0);
-		init_signal();
-		if ((WIFEXITED(status) && WEXITSTATUS(status) == 130))
-		{
-			ms->exit_status = 130;
-			close(pipe_fd[0]);
-			return (-1);
-		}
-		else if (WIFSIGNALED(status))
-        {
-            ms->exit_status = 128 + WTERMSIG(status);
-            close(pipe_fd[0]);
-            return (-1);
-        }
-        return (pipe_fd[0]);
-	}
+	else if (pid > 0)
+		return (heredoc_parent(ms, pid, pipe_fd));
 	else
 	{
 		perror("fork");
@@ -80,10 +65,10 @@ static int  setup_heredoc(t_minishell *ms, char *delimiter)
 	return (0);
 }
 
-int     handle_heredoc(t_minishell *ms)
+int	handle_heredoc(t_minishell *ms)
 {
-    t_token_list	*tmp;
-    int				fd;
+	t_token_list	*tmp;
+	int				fd;
 
 	fd = -1;
 	tmp = ms->token_list;
@@ -104,5 +89,5 @@ int     handle_heredoc(t_minishell *ms)
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 	}
-    return (0);
+	return (0);
 }

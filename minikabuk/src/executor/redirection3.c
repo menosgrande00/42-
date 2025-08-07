@@ -1,12 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirection3.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:59:46 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 18:00:05 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static void	extract_last_output_redirect(t_token_list *tmp, char **last_file, int *is_append)
+static void	extract_last_output_redirect(t_token_list *tmp,
+	char **last_file, int *is_append)
 {
 	*last_file = NULL;
 	*is_append = 0;
 	while (tmp && tmp->token->type != TOKEN_PIPE)
 	{
-		if ((tmp->token->type == TOKEN_REDIRECT_OUT || tmp->token->type == TOKEN_APPEND) && tmp->next)
+		if ((tmp->token->type == TOKEN_REDIRECT_OUT
+				|| tmp->token->type == TOKEN_APPEND) && tmp->next)
 		{
 			*last_file = tmp->next->token->value;
 			*is_append = (tmp->token->type == TOKEN_APPEND);

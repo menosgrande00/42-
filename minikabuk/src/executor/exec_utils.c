@@ -1,36 +1,48 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:43:14 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 17:44:30 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "executor.h"
 
-int is_valid_identifier(const char *name)
+int	is_valid_identifier(const char *name)
 {
-    int i;
+	int	i;
 
-    if (!name || (!ft_isalpha(name[0]) && name[0] != '_'))
-        return (0);
-    i = 1;
-    while (name[i])
-    {
+	if (!name || (!ft_isalpha(name[0]) && name[0] != '_'))
+		return (0);
+	i = 1;
+	while (name[i])
+	{
 		if (name[i] == '=')
 		{
 			i++;
-			continue;
+			continue ;
 		}
-        else if ((!ft_isalnum(name[i]) && name[i] != '_')
+		else if ((!ft_isalnum(name[i]) && name[i] != '_')
 			|| (!ft_isalnum(name[i]) && name[i] != '\0'))
-            return (0);
-        i++;
-    }
-    return (1);
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 int	same_token_number(t_token_list **tmp)
 {
-	int 			count;
+	int				count;
 	t_token_list	*last;
 
 	last = *tmp;
 	count = 0;
-	while (last && (last->token->type == TOKEN_COMMAND || 
-			last->token->type == TOKEN_WORD))
+	while (last && (last->token->type == TOKEN_COMMAND
+			|| last->token->type == TOKEN_WORD))
 	{
 		count++;
 		last = last->next;
@@ -38,7 +50,7 @@ int	same_token_number(t_token_list **tmp)
 	return (count);
 }
 
-char **ft_same_tokens(t_token_list **tmp)
+char	**ft_same_tokens(t_token_list **tmp)
 {
 	int				count;
 	char			**tokens;
@@ -49,8 +61,8 @@ char **ft_same_tokens(t_token_list **tmp)
 	tokens = malloc(sizeof(char *) * (count + 1));
 	if (!tokens)
 		return (NULL);
-	while (*tmp && ((*tmp)->token->type == TOKEN_COMMAND || 
-			(*tmp)->token->type == TOKEN_WORD))
+	while (*tmp && ((*tmp)->token->type == TOKEN_COMMAND
+			|| (*tmp)->token->type == TOKEN_WORD))
 	{
 		tokens[i++] = ft_strdup((*tmp)->token->value);
 		*tmp = (*tmp)->next;

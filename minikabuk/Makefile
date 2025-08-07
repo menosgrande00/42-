@@ -37,14 +37,17 @@ SRCS =	$(SRC_DIR)/main.c \
 		$(BUILTINS_DIR)/cd.c \
 		$(BUILTINS_DIR)/cd_back_one.c \
 		$(BUILTINS_DIR)/echo.c \
+		$(BUILTINS_DIR)/echo_array.c \
 		$(BUILTINS_DIR)/env.c \
 		$(BUILTINS_DIR)/exit.c \
+		$(BUILTINS_DIR)/exit_determine.c \
 		$(BUILTINS_DIR)/export.c \
 		$(BUILTINS_DIR)/print_export.c \
 		$(BUILTINS_DIR)/pwd.c \
 		$(BUILTINS_DIR)/unset.c \
         $(EXECUTOR_DIR)/exec_cmd.c \
 		$(EXECUTOR_DIR)/exec_cmd2.c \
+		$(EXECUTOR_DIR)/exec_cmd3.c \
         $(EXECUTOR_DIR)/redirection.c \
 		$(EXECUTOR_DIR)/redirection2.c \
 		$(EXECUTOR_DIR)/redirection3.c \
@@ -52,8 +55,10 @@ SRCS =	$(SRC_DIR)/main.c \
 		$(EXECUTOR_DIR)/redirection5.c \
 		$(EXECUTOR_DIR)/redirection_utils.c \
 		$(EXECUTOR_DIR)/heredoc.c \
+		$(EXECUTOR_DIR)/heredoc_child.c \
 		$(EXECUTOR_DIR)/pipe.c \
-		$(EXECUTOR_DIR)/pipe2.c \
+		$(EXECUTOR_DIR)/pipe_exec.c \
+		$(EXECUTOR_DIR)/pipe_process.c \
 		$(EXECUTOR_DIR)/exec_utils.c \
 		$(EXECUTOR_DIR)/exec_utils2.c \
 		$(EXECUTOR_DIR)/free.c \
