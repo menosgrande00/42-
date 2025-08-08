@@ -6,7 +6,7 @@
 /*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 18:17:15 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/07 18:17:16 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/08 13:12:45 by omerfarukon      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,5 +70,7 @@ void	set_default_signals(void);
 void	simple_signal_handler(int sign);
 void	heredoc_sigint_handler(int signo);
 int		check_signal(void);
+int		has_redirect(t_minishell *minishell);
+int		has_heredoc(t_minishell *minishell);
 
 #endif

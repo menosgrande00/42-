@@ -6,7 +6,7 @@
 /*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:38:35 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/07 17:42:29 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/08 13:18:33 by omerfarukon      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,27 @@ int	handle_fork_and_execute(t_minishell *ms, char **cmd, t_token_list *tmp)
 	else
 		ms->exit_status = 1;
 	return (0);
+}
+
+void	execute_in_parent(char *cmd, t_minishell *minishell)
+{
+	t_token_list	*tmp;
+
+	if (ft_strcmp(cmd, "cd") == 0)
+		minishell->exit_status = ft_cd(minishell);
+	else if (ft_strcmp(cmd, "export") == 0)
+		minishell->exit_status = ft_export(minishell);
+	else if (ft_strcmp(cmd, "unset") == 0)
+	{
+		minishell->exit_status = 0;
+		tmp = minishell->token_list->next;
+		while (tmp && tmp->token->type == TOKEN_WORD)
+		{
+			if (ft_unset(minishell, tmp->token->value))
+				minishell->exit_status = 1;
+			tmp = tmp->next;
+		}
+	}
+	else if (ft_strcmp(cmd, "exit") == 0)
+		minishell->exit_status = ft_exit(minishell);
 }

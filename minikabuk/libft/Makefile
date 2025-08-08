@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: agurses <agurses@student.42istanbul.com    +#+  +:+       +#+         #
+#    By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/12 14:32:58 by agurses           #+#    #+#              #
-#    Updated: 2024/11/15 17:30:58 by agurses          ###   ########.fr        #
+#    Updated: 2025/08/08 13:56:25 by omerfarukon      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,8 +31,6 @@ SRCS		= ft_memset.c \
 			  ft_isalnum.c \
 			  ft_isascii.c \
 			  ft_isprint.c \
-			  ft_toupper.c \
-			  ft_tolower.c \
 			  ft_calloc.c \
 			  ft_strdup.c \
 			  ft_substr.c \

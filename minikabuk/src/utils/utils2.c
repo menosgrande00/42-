@@ -6,7 +6,7 @@
 /*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 18:06:39 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/07 18:07:10 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/08 13:12:14 by omerfarukon      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,36 @@ int	is_numeric(const char *str)
 		if (str[i] < '0' || str[i] > '9')
 			return (1);
 		i++;
+	}
+	return (0);
+}
+
+int	has_redirect(t_minishell *minishell)
+{
+	t_token_list	*tmp;
+
+	tmp = minishell->token_list;
+	while (tmp && tmp->token->type != TOKEN_PIPE)
+	{
+		if (tmp->token->type == TOKEN_APPEND
+			|| tmp->token->type == TOKEN_REDIRECT_IN
+			|| tmp->token->type == TOKEN_REDIRECT_OUT)
+			return (1);
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
+int	has_heredoc(t_minishell *minishell)
+{
+	t_token_list	*tmp;
+
+	tmp = minishell->token_list;
+	while (tmp && tmp->token->type != TOKEN_PIPE)
+	{
+		if (tmp->token->type == TOKEN_HEREDOC)
+			return (1);
+		tmp = tmp->next;
 	}
 	return (0);
 }
