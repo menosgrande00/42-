@@ -1,0 +1,58 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 20:01:28 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/07 18:05:30 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+volatile sig_atomic_t	g_signal_received = 0;
+
+void	ft_ctrl_c(int sig)
+{
+	g_signal_received = sig;
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	write(1, "\n^C\n", 4);
+	rl_redisplay();
+}
+
+void	init_signal(void)
+{
+	struct termios	term;
+
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag &= ~ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+	signal(SIGINT, ft_ctrl_c);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	simple_signal_handler(int sign)
+{
+	g_signal_received = sign;
+	if (sign == SIGINT)
+		write(1, "\n", 1);
+}
+
+int	check_signal(void)
+{
+	int	sig;
+
+	sig = g_signal_received;
+	g_signal_received = 0;
+	return (sig);
+}
+
+void	heredoc_sigint_handler(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+	exit(130);
+}
