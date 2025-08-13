@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:38:32 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/11 20:52:25 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/13 17:26:33 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int	process_single_token(t_minishell *minishell, t_token_list **tmp)
 {
 	char	**cmd;
 	int		saved_stdin;
+	int		ret;
 
 	cmd = current_token(*tmp);
 	if (has_redirect(minishell))
@@ -66,7 +67,10 @@ int	process_single_token(t_minishell *minishell, t_token_list **tmp)
 		skip_redirect_tokens(tmp);
 		return (minishell->exit_status);
 	}
-	return (handle_heredoc_and_commands(minishell, tmp, cmd));
+	ret = handle_heredoc_and_commands(minishell, tmp, cmd);
+	if (cmd)
+		free(cmd);
+	return (ret);
 }
 
 int	execute_no_pipe(t_minishell *minishell, t_token_list *tmp)
@@ -75,7 +79,11 @@ int	execute_no_pipe(t_minishell *minishell, t_token_list *tmp)
 	{
 		process_single_token(minishell, &tmp);
 		if (tmp && !has_redirect_or_heredoc(minishell))
-			tmp = tmp->next;
+		{
+			while (tmp && (tmp->token->type == TOKEN_COMMAND
+					|| tmp->token->type == TOKEN_WORD))
+				tmp = tmp->next;
+		}
 	}
 	return (minishell->exit_status);
 }

@@ -105,4 +105,13 @@ fclean : clean
 	rm -rf $(OBJS)
 	rm -rf $(LIBFT_DIR)libft.a
 
+leaks:
+	@valgrind	--leak-check=full \
+                --suppressions=readline.supp \
+                --show-leak-kinds=all \
+                --track-origins=yes \
+                --track-fds=yes \
+                --verbose \
+                ./$(NAME)
+
 re: fclean all

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:21:20 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/07 17:22:24 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/12 20:19:29 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,9 @@ int	ft_cd(t_minishell *minishell)
 				"minishell: cd: getcwd failed", ERR_FILESYSTEM));
 	new_path = NULL;
 	tmp = minishell->token_list;
+	if (tmp->next->next)
+		return (report_error(minishell,
+			"minishell: cd: too many arguments", 1));
 	if (!tmp->next)
 	{
 		ft_cd_back_start(minishell);

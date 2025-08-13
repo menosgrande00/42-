@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 20:01:28 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/07 18:05:30 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/13 19:07:25 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	init_signal(void)
 {
 	struct termios	term;
 
+	ft_memset(&term, 0, sizeof(struct termios));
 	tcgetattr(STDIN_FILENO, &term);
 	term.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 20:11:57 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/11 02:04:12 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/13 19:12:00 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,11 @@ int	split_input(t_minishell *minishell)
 
 t_token_list	*tokenizer(t_minishell *minishell)
 {
-	minishell->token_list = NULL;
+	if (minishell->token_list)
+	{
+		free_token_list(minishell->token_list);
+		minishell->token_list = NULL;
+	}
 	if (!minishell || !(minishell)->input)
 		return (NULL);
 	split_input(minishell);

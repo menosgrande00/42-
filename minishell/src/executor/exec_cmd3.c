@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd3.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:38:38 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/07 17:38:39 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/13 17:21:46 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,9 @@ void	validate_and_execute(t_minishell *minishell, char **cmd, char *path)
 
 	env_array = make_env_array(minishell);
 	handle_errors_and_exit(minishell, cmd, path, env_array);
-	execve(path, cmd, make_env_array(minishell));
+	if (minishell->exit_status)
+		return ;
+	execve(path, cmd, env_array);
 	free(path);
 	free_double(env_array);
 	exit(1);

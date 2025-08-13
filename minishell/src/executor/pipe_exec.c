@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_exec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:51:21 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/07 17:51:22 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/13 19:04:48 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,12 @@ static void	execute_execve(t_minishell *minishell, char **cmd)
 	if (!path)
 	{
 		report_cmd_not_found(minishell, cmd[0]);
-		free_double(cmd);
+		if (cmd)
+			free(cmd);
 		exit(127);
 	}
-	free_double(cmd);
+	if (cmd)
+		free(cmd);
 	cmd = ft_same_tokens(&minishell->token_list);
 	env_array = make_env_array(minishell);
 	minishell->exit_status = execve(path, cmd, env_array);

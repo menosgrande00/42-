@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 19:58:08 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/11 21:02:14 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/13 17:09:33 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_minishell	*create_minishell(void)
 {
 	t_minishell	*minishell;
 
-	minishell = malloc(sizeof(t_minishell));
+	minishell = ft_calloc(1, sizeof(t_minishell));
 	if (!minishell)
 	{
 		perror("malloc");
@@ -30,6 +30,8 @@ t_minishell	*create_minishell(void)
 	minishell->input = NULL;
 	minishell->envp = NULL;
 	minishell->tokens = NULL;
+	minishell->token_list = NULL;
+	minishell->export = NULL;
 	minishell->exit_status = 0;
 	return (minishell);
 }

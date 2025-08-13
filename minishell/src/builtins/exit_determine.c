@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit_determine.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:23:49 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/07 17:23:50 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/12 20:12:20 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int	handle_single_arg(t_minishell *minishell)
 		else if (!is_numeric(minishell->token_list->next->token->value))
 			return (ft_atoi(minishell->token_list->next->token->value) % 256);
 		else
-			return (255);
+			return (2);
 	}
 	return (-1);
 }
@@ -69,7 +69,7 @@ static int	process_joined_arg(t_minishell *minishell)
 	else
 	{
 		free(tmp);
-		return (255);
+		return (2);
 	}
 }
 

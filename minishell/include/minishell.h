@@ -3,15 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 18:17:15 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/11 21:20:30 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/12 20:51:23 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
+
+#ifndef ECHOCTL
+#define ECHOCTL 0x00000040
+#endif
 
 # include <stdio.h>
 # include <readline/readline.h>
@@ -28,6 +32,7 @@
 # include "errors/errors.h"
 # include "builtins/builtins.h"
 # include <errno.h>
+# include <signal.h>
 # include <sys/stat.h>
 
 typedef struct s_token_list		t_token_list;

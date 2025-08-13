@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:38:15 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/07 17:38:16 by omerfarukon      ###   ########.fr       */
+/*   Updated: 2025/08/12 20:20:59 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	report_error(t_minishell *minishell, const char *msg, int code)
 {
 	if (msg)
 	{
-		write(2, msg, ft_strlen(msg) - 1);
+		write(2, msg, ft_strlen(msg));
 		write(2, "\n", 1);
 	}
 	minishell->exit_status = code;
