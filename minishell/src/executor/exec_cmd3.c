@@ -6,54 +6,59 @@
 /*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:38:38 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/13 22:27:00 by oonal            ###   ########.fr       */
+/*   Updated: 2025/08/14 15:35:31 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	check_directory_and_permissions(t_minishell *minishell,
+static int	check_directory_and_permissions(t_minishell *minishell,
 		char **cmd, char *path, char **env_array)
 {
 	struct stat	st;
+	(void)env_array;
 
 	if (stat(path, &st) == 0 && is_dot(cmd))
 	{
 		if (S_ISDIR(st.st_mode))
 		{
-			free(path);
-			free_double(env_array);
-			exit(report_is_a_directory(minishell, cmd[0]));
+			minishell->exit_status = report_is_a_directory(minishell, cmd[0]);
+			return (1);
 		}
 		else if (!(st.st_mode & S_IXUSR))
 		{
-			free(path);
-			free_double(env_array);
-			exit(report_perm_denied(minishell, cmd[0]));
+			minishell->exit_status = report_perm_denied(minishell, cmd[0]);
+			return (1);
 		}
 	}
+	return (0);
 }
 
 static void	handle_path_errors_and_exit(t_minishell *minishell, char **cmd,
 		char *path, char **env_array)
 {
+	(void)env_array;
+
 	if (is_dot(cmd))
 	{
-		free(path);
-		free_double(env_array);
-		exit(report_no_such_file(minishell, cmd[0]));
+		minishell->exit_status = report_no_such_file(minishell, cmd[0]);
+		return ;
 	}
 	if (!path)
 	{
-		free_double(env_array);
-		exit(report_cmd_not_found(minishell, cmd[0]));
+		minishell->exit_status = report_cmd_not_found(minishell, cmd[0]);
+		return ;
 	}
 }
 
 void	handle_errors_and_exit(t_minishell *minishell, char **cmd, char *path,
 		char **env_array)
 {
-	check_directory_and_permissions(minishell, cmd, path, env_array);
+	int	ret;
+
+	ret = check_directory_and_permissions(minishell, cmd, path, env_array);
+	if (ret)
+		return ;
 	handle_path_errors_and_exit(minishell, cmd, path, env_array);
 }
 
@@ -67,13 +72,20 @@ void	validate_and_execute(t_minishell *minishell, char **cmd, char *path)
 	if (minishell->exit_status)
 	{
 		status = minishell->exit_status;
-		free_double(env_array);
+		if (path)
+			free(path);
+		if (env_array)
+			free_double(env_array);
+		if (!minishell->tokens && cmd)
+			free(cmd);
 		free_for_exit(minishell);
 		exit(status);
 	}
 	execve(path, cmd, env_array);
 	free(path);
 	free_double(env_array);
+	if (!minishell->tokens && cmd)
+		free(cmd);
 	free_for_exit(minishell);
 	exit(1);
 }

@@ -6,7 +6,7 @@
 /*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/07 17:38:35 by omerfarukon       #+#    #+#             */
-/*   Updated: 2025/08/13 22:40:06 by oonal            ###   ########.fr       */
+/*   Updated: 2025/08/14 15:32:23 by oonal            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,9 @@ static void	execute_child(t_minishell *ms, char **cmd, t_token_list **tmp)
 		ms->token_list = saved_head;
 		if (cmd)
 			free(cmd);
-		{
-			status = ms->exit_status;
-			free_for_exit(ms);
-			exit(status);
-		}
+		status = ms->exit_status;
+		free_for_exit(ms);
+		exit(status);
 	}
 	path = get_path(ms->envp, cmd[0]);
 	if (!path && is_dot(cmd))
@@ -44,17 +42,18 @@ static void	execute_child(t_minishell *ms, char **cmd, t_token_list **tmp)
 	new_cmd = ft_same_tokens(tmp);
 	if (new_cmd)
 	{
-		free_double(cmd);
+		// current_token() allocated only the array, not the strings
+		// so free just the array here to avoid double-free of token values
+		free(cmd);
 		cmd = new_cmd;
+		// keep for cleanup on any child exit path
+		ms->tokens = new_cmd;
 	}
 	validate_and_execute(ms, cmd, path);
-	if (cmd)
-		free_double(cmd);
-	{
-		status = ms->exit_status;
-		free_for_exit(ms);
-		exit(status);
-	}
+	// validate_and_execute never returns (execs or exits), but keep a safe exit
+	status = ms->exit_status;
+	free_for_exit(ms);
+	exit(status);
 }
 
 int	handle_fork_and_execute(t_minishell *ms, char **cmd, t_token_list *tmp)
