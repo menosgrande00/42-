@@ -1,0 +1,91 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_cmd3.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: omerfarukonal <omerfarukonal@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/07 17:38:38 by omerfarukon       #+#    #+#             */
+/*   Updated: 2025/08/17 09:29:49 by omerfarukon      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "minishell.h"
+
+static int	check_directory_and_permissions(t_minishell *minishell,
+		char **cmd, char *path, char **env_array)
+{
+	struct stat	st;
+
+	(void)env_array;
+	if (stat(path, &st) == 0 && is_dot(cmd))
+	{
+		if (S_ISDIR(st.st_mode))
+		{
+			minishell->exit_status = report_is_a_directory(minishell, cmd[0]);
+			return (1);
+		}
+		else if (!(st.st_mode & S_IXUSR))
+		{
+			minishell->exit_status = report_perm_denied(minishell, cmd[0]);
+			return (1);
+		}
+	}
+	return (0);
+}
+
+static void	handle_path_errors_and_exit(t_minishell *minishell, char **cmd,
+		char *path, char **env_array)
+{
+	(void)env_array;
+	if (is_dot(cmd))
+	{
+		minishell->exit_status = report_no_such_file(minishell, cmd[0]);
+		return ;
+	}
+	if (!path)
+	{
+		minishell->exit_status = report_cmd_not_found(minishell, cmd[0]);
+		return ;
+	}
+}
+
+void	handle_errors_and_exit(t_minishell *minishell, char **cmd, char *path,
+		char **env_array)
+{
+	int	ret;
+
+	ret = check_directory_and_permissions(minishell, cmd, path, env_array);
+	if (ret)
+		return ;
+	handle_path_errors_and_exit(minishell, cmd, path, env_array);
+}
+
+void	validate_and_execute(t_minishell *minishell, char **cmd, char *path)
+{
+	char	**env_array;
+	int		status;
+
+	env_array = make_env_array(minishell);
+	handle_errors_and_exit(minishell, cmd, path, env_array);
+	if (minishell->exit_status
+		&& (minishell->exit_status != 130 || minishell->exit_status == 131))
+	{
+		status = minishell->exit_status;
+		if (path)
+			free(path);
+		if (env_array)
+			free_double(env_array);
+		if (!minishell->tokens && cmd)
+			free(cmd);
+		free_for_exit(minishell);
+		exit(status);
+	}
+	execve(path, cmd, env_array);
+	free(path);
+	free_double(env_array);
+	if (!minishell->tokens && cmd)
+		free(cmd);
+	free_for_exit(minishell);
+	exit(1);
+}
