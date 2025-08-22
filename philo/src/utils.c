@@ -18,52 +18,52 @@ int	ft_atoi(const char *str)
 	}
 	else if (str[i] == '+')
 		i++;
-	while (ft_isdigit(str[i]))
+	while (str[i] >= '0' && str[i] <= '9')
 	{
 		result *= 10;
 		result += str[i] - '0';
 		i++;
 	}
-	return (result * sign);
+	return ((int)(result * sign));
 }
 
-long timestamp(void)
+long    timestamp(void)
 {
-    struct timeval tv;
-    
-    gettimeofday(&tv, NULL);
-    return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
+	struct timeval	tv;
+	
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-void precise_sleep(long ms)
+void    precise_sleep(long ms)
 {
-    long start;
-    
-    start = timestamp();
-    while (timestamp() - start < ms)
-        usleep(100);
+	long	start;
+	
+	start = timestamp();
+	while (timestamp() - start < ms)
+		usleep(300);
 }
 
 int check_death(t_all *all)
 {
-    pthread_mutex_lock(&all->death_mutex);
-    if (all->someone_died)
-    {
-        pthread_mutex_unlock(&all->death_mutex);
-        return (1);
-    }
-    pthread_mutex_unlock(&all->death_mutex);
-    return (0);
+	pthread_mutex_lock(&all->death_mutex);
+	if (all->someone_died)
+	{
+		pthread_mutex_unlock(&all->death_mutex);
+		return (1);
+	}
+	pthread_mutex_unlock(&all->death_mutex);
+	return (0);
 }
 
 int check_all_ate(t_all *all)
 {
-    pthread_mutex_lock(&all->death_mutex);
-    if (all->all_ate_enough)
-    {
-        pthread_mutex_unlock(&all->death_mutex);
-        return (1);
-    }
-    pthread_mutex_unlock(&all->death_mutex);
-    return (0);
+	pthread_mutex_lock(&all->death_mutex);
+	if (all->all_ate_enough)
+	{
+		pthread_mutex_unlock(&all->death_mutex);
+		return (1);
+	}
+	pthread_mutex_unlock(&all->death_mutex);
+	return (0);
 }
