@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/23 19:19:45 by oonal             #+#    #+#             */
+/*   Updated: 2025/08/23 19:27:34 by oonal            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 int	ft_atoi(const char *str)
@@ -27,24 +39,24 @@ int	ft_atoi(const char *str)
 	return ((int)(result * sign));
 }
 
-long    timestamp(void)
+long	timestamp(void)
 {
 	struct timeval	tv;
-	
+
 	gettimeofday(&tv, NULL);
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
-void    precise_sleep(long ms)
+void	precise_sleep(long ms)
 {
 	long	start;
-	
+
 	start = timestamp();
 	while (timestamp() - start < ms)
 		usleep(300);
 }
 
-int check_death(t_all *all)
+int	check_death(t_all *all)
 {
 	pthread_mutex_lock(&all->death_mutex);
 	if (all->someone_died)
@@ -56,7 +68,7 @@ int check_death(t_all *all)
 	return (0);
 }
 
-int check_all_ate(t_all *all)
+int	check_all_ate(t_all *all)
 {
 	pthread_mutex_lock(&all->death_mutex);
 	if (all->all_ate_enough)

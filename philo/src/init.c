@@ -1,13 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oonal <oonal@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/23 19:20:11 by oonal             #+#    #+#             */
+/*   Updated: 2025/08/23 19:28:54 by oonal            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-int init_philo(t_all *all)
+int	init_philo(t_all *all)
 {
 	int	i;
 
 	all->philos = malloc(sizeof(t_philo) * all->nb_philo);
 	if (!all->philos)
 		return (1);
-	
 	i = -1;
 	while (++i < all->nb_philo)
 	{
@@ -17,7 +28,6 @@ int init_philo(t_all *all)
 		all->philos[i].all = all;
 		all->philos[i].left_fork = &all->forks[i];
 		all->philos[i].right_fork = &all->forks[(i + 1) % all->nb_philo];
-		
 		if (pthread_mutex_init(&all->philos[i].meal_mutex, NULL))
 		{
 			while (--i >= 0)
@@ -29,25 +39,10 @@ int init_philo(t_all *all)
 	return (0);
 }
 
-int init_mutex(t_all *all)
+static int	init_other_mutexes(t_all *all)
 {
-	int i;
+	int	i;
 
-	all->forks = malloc(sizeof(pthread_mutex_t) * all->nb_philo);
-	if (!all->forks)
-		return (1);
-	i = 0;
-	while (i < all->nb_philo)
-	{
-		if (pthread_mutex_init(&all->forks[i], NULL))
-		{
-			while (--i >= 0)
-				pthread_mutex_destroy(&all->forks[i]);
-			free(all->forks);
-			return (1);
-		}
-		i++;
-	}
 	if (pthread_mutex_init(&all->print_mutex, NULL))
 	{
 		i = all->nb_philo;
@@ -68,7 +63,29 @@ int init_mutex(t_all *all)
 	return (0);
 }
 
-int init_all(t_all *all, int argc, char **argv)
+int	init_mutex(t_all *all)
+{
+	int	i;
+
+	all->forks = malloc(sizeof(pthread_mutex_t) * all->nb_philo);
+	if (!all->forks)
+		return (1);
+	i = -1;
+	while (++i < all->nb_philo)
+	{
+		if (pthread_mutex_init(&all->forks[i], NULL))
+		{
+			while (--i >= 0)
+				pthread_mutex_destroy(&all->forks[i]);
+			free(all->forks);
+			return (1);
+		}
+	}
+	i = init_other_mutexes(all);
+	return (i);
+}
+
+int	init_all(t_all *all, int argc, char **argv)
 {
 	if (argc != 5 && argc != 6)
 		return (1);
@@ -78,7 +95,7 @@ int init_all(t_all *all, int argc, char **argv)
 	all->time_to_sleep = ft_atoi(argv[4]);
 	if (all->nb_philo <= 0 || all->nb_philo > 200 || all->time_to_die < 60
 		|| all->time_to_eat < 60 || all->time_to_sleep < 60)
-		return (1);  
+		return (1);
 	if (argc == 6)
 	{
 		all->must_eat_count = ft_atoi(argv[5]);
@@ -97,10 +114,10 @@ int init_all(t_all *all, int argc, char **argv)
 	return (0);
 }
 
-void cleanup_all(t_all *all)
+void	cleanup_all(t_all *all)
 {
-	int i;
-	
+	int	i;
+
 	if (all->philos)
 	{
 		i = 0;
@@ -111,7 +128,6 @@ void cleanup_all(t_all *all)
 		}
 		free(all->philos);
 	}
-	
 	if (all->forks)
 	{
 		i = 0;

@@ -6,7 +6,8 @@ CFLAGS = -Wall -Werror -Wextra -g -pthread -Wno-deprecated-declarations
 SRCS =	src/main.c \
 		src/utils.c \
 		src/init.c \
-		src/philo.c \
+		src/philo_routin.c \
+		src/philo_routin_utils.c \
 		src/monitor.c
 
 OBJS = $(SRCS:.c=.o)
