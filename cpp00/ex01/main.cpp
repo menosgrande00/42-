@@ -29,7 +29,9 @@ int	main()
 	{
 		std::cout << "3 options: ADD,SEARCH,EXIT" << std::endl;
 		std::cout << ">";
-		std::cin >> str;
+		std::getline(std::cin, str);
+		if (std::cin.eof())
+			exit(0);
 		if (str == "SEARCH")
 		{
 			if (pb.getCount() == 0)
@@ -38,7 +40,9 @@ int	main()
 			{
 				pb.listContact();
 				std::cout << "Enter an index: ";
-				std::cin >> input;
+				std::getline(std::cin, input);
+				if (std::cin.eof())
+					exit(0);
 				if (!isNumber(input)) 
 				{
     				std::cout << "Invalid index" << std::endl;
@@ -51,20 +55,50 @@ int	main()
 		else if (str == "ADD")
 		{
 			std::cout << "First Name: ";
-			std::cin >> first;
-
+			std::getline(std::cin, first);
+			if (std::cin.eof())
+				exit(0);
+			if (first.empty())
+			{
+				std::cout << "First Name cannot be empty" << std::endl;
+				continue ;
+			}
 			std::cout << "Last Name: ";
-			std::cin >> last;
-
+			std::getline(std::cin, last);
+			if (std::cin.eof())
+				exit(0);
+			if (last.empty())
+			{
+				std::cout << "Last Name cannot be empty" << std::endl;
+				continue ;
+			}
 			std::cout << "Nickname: ";
-			std::cin >> nick;
-
+			std::getline(std::cin, nick);
+			if (std::cin.eof())
+				exit(0);
+			if (nick.empty())
+			{
+				std::cout << "Nickname cannot be empty" << std::endl;
+				continue ;
+			}
 			std::cout << "Dark Secret: ";
-			std::cin >> dark;
-
+			std::getline(std::cin, dark);
+			if (std::cin.eof())
+				exit(0);
+			if (dark.empty())
+			{
+				std::cout << "Dark Secret cannot be empty" << std::endl;
+				continue ;
+			}
 			std::cout << "Phone Number: ";
-			std::cin >> phone;
-
+			std::getline(std::cin, phone);
+			if (std::cin.eof())
+				exit(0);
+			if (phone.empty())
+			{
+				std::cout << "Phone Number cannot be empty" << std::endl;
+				continue ;
+			}
 			Contact		c;
 			c.setContact(first, last, nick, phone, dark);
 			pb.addContact(c);
