@@ -58,28 +58,31 @@ int	main()
 			std::getline(std::cin, first);
 			if (std::cin.eof())
 				exit(0);
-			if (first.empty())
+			while (first.empty())
 			{
 				std::cout << "First Name cannot be empty" << std::endl;
-				continue ;
+				std::cout << "First Name: ";
+				std::getline(std::cin, first);
 			}
 			std::cout << "Last Name: ";
 			std::getline(std::cin, last);
 			if (std::cin.eof())
 				exit(0);
-			if (last.empty())
+			while (last.empty())
 			{
 				std::cout << "Last Name cannot be empty" << std::endl;
-				continue ;
+				std::cout << "Last Name: ";
+				std::getline(std::cin, last);
 			}
 			std::cout << "Nickname: ";
 			std::getline(std::cin, nick);
 			if (std::cin.eof())
 				exit(0);
-			if (nick.empty())
+			while (nick.empty())
 			{
 				std::cout << "Nickname cannot be empty" << std::endl;
-				continue ;
+				std::cout << "Nickname: ";
+				std::getline(std::cin, nick);
 			}
 			std::cout << "Dark Secret: ";
 			std::getline(std::cin, dark);
@@ -88,7 +91,8 @@ int	main()
 			if (dark.empty())
 			{
 				std::cout << "Dark Secret cannot be empty" << std::endl;
-				continue ;
+				std::cout << "Dark Secret: ";
+				std::getline(std::cin, dark);
 			}
 			std::cout << "Phone Number: ";
 			std::getline(std::cin, phone);
@@ -97,7 +101,8 @@ int	main()
 			if (phone.empty())
 			{
 				std::cout << "Phone Number cannot be empty" << std::endl;
-				continue ;
+				std::cout << "Phone Number: ";
+				std::getline(std::cin, phone);
 			}
 			Contact		c;
 			c.setContact(first, last, nick, phone, dark);
