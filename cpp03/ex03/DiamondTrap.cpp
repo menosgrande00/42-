@@ -2,10 +2,10 @@
 #include <iostream>
 
 DiamondTrap::DiamondTrap()
-	:	ClapTrap("default_clap_name"),
-		ScavTrap("default"),
-		FragTrap("default"),
-		_name("default")
+	:	ClapTrap("_clap_name"),
+		ScavTrap(),
+		FragTrap(),
+		_name()
 {
 	_hit = 100;
 	_energy = 50;
