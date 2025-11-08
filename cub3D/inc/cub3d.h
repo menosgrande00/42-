@@ -109,10 +109,15 @@ typedef struct	s_cub
 	t_map		map;
 	t_player	player;
 	t_keys		keys;
+	t_cfg		cfg;
 }	t_cub;
 
 int		ft_strcmp(char *s1, char *s2);
 int		in_range(int v);
-int		set_tex_color_lines(t_cfg *cfg, const char *path);
+int		set_tex_color_lines(t_cfg *cfg, int	fd);
+int		set_map_parse(t_cub *cfg, int fd);
+int		is_line_blank(char *s);
+void	trim_newline(char *s);
+
 
 #endif

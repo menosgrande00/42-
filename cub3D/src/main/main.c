@@ -2,13 +2,15 @@
 
 int main(int argc, char **argv)
 {
-	t_cfg	cfg;
+	t_cub	cub;
+	int		fd;
 
 	if (argc == 2)
 	{
-		if (set_tex_color_lines(&cfg, argv[1]))
+		fd = open(argv[1], O_RDONLY);
+		if (set_tex_color_lines(&cub.cfg, fd) || set_map_parse(&cub, fd))
 		{
-			free_cfg(&cfg);
+			free_all(&cub);
 			return (1);
 		}
 	}

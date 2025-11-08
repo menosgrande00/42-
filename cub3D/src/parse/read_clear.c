@@ -148,14 +148,12 @@ int		check_line(t_cfg *cfg, char *line)
 	return (0);
 }
 
-int		set_tex_color_lines(t_cfg *cfg, const char *path)
+int		set_tex_color_lines(t_cfg *cfg, int	fd)
 {
-	int		fd;
 	int		i;
 	char	*line;
 
 	i = 0;
-	fd = open(path, O_RDONLY);
 	if (fd < 0)
 	{
 		ft_error("Cub file couldn't open");
