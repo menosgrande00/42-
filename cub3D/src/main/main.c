@@ -15,6 +15,6 @@ int main(int argc, char **argv)
 		}
 	}
 	else
-		strerror("Program takes just a 2 arguman!");
+		ft_error("Program takes just a 2 arguman!");
 	return (0);
 }

@@ -118,6 +118,7 @@ int		set_tex_color_lines(t_cfg *cfg, int	fd);
 int		set_map_parse(t_cub *cfg, int fd);
 int		is_line_blank(char *s);
 void	trim_newline(char *s);
-
+int		collect_map_lines(int fd, char ***lines, int *h);
+void	ft_error(char *str);
 
 #endif
